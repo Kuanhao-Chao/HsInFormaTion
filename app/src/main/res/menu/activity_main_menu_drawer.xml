@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:title="Emergency Information"
+        android:id="@+id/activity_main_menu_ic_emergencyInformation"
+        android:icon="@drawable/ic_action_emergency_information"
+        />
+    <item
+        android:title="Tranportation Information"
+        android:id="@+id/activity_main_menu_transportationInformation"
+        android:icon="@drawable/ic_action_transportation_information"
+        />
+
+</menu>
