@@ -17,9 +17,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".Activity_Information_List_and_Map.Information_List_Activity"
-            android:label="ToolBar"
+            android:label="Information_List"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Activity_Information_List_and_Map.Information_Map_Activity"/>
+        <activity android:name=".Activity_Information_List_and_Map.Information_Map_Activity"
+            android:label="Information_List"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Activity_Main_Menu.Transportation"/>
     </application>
 

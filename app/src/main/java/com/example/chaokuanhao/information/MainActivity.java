@@ -11,6 +11,7 @@ import android.view.MenuItem;
  */
 
 import com.example.chaokuanhao.information.Activity_Information_List_and_Map.Information_List_Activity;
+import com.example.chaokuanhao.information.Activity_Information_List_and_Map.Information_Map_Activity;
 
 public class MainActivity extends AppCompatActivity {
 

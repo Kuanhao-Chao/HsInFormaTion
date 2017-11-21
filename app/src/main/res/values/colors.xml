@@ -7,4 +7,5 @@
     <color name="selector_item_color">#4e6ca3</color>
     <color name="grey">#bfbfbf</color>
     <color name="white">#fff</color>
+    <color name="black">#000</color>
 </resources>

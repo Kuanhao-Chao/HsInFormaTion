@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -71,12 +70,12 @@ public class Information_List_Activity extends AppCompatActivity implements Navi
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_menu);
+        setContentView(R.layout.activity_main_menu_information);
 
 //        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation_list);
 //        bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolBar_mainPage);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolBar_list);
         setSupportActionBar(toolbar);               // this one is for old version
 
         setupBottomNavigationView();
@@ -103,6 +102,7 @@ public class Information_List_Activity extends AppCompatActivity implements Navi
         getMenuInflater().inflate(R.menu.menu_additional, menu);
         return true;
     }
+
     /**
      * This function is to send the MenuItem to the menu.
      */
@@ -127,7 +127,7 @@ public class Information_List_Activity extends AppCompatActivity implements Navi
     }
 
     private void initInstanceDrawer( ){
-        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appBar_mainPage);
+        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appBar_list);
 //        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
 //            @Override
 //            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
@@ -164,7 +164,7 @@ public class Information_List_Activity extends AppCompatActivity implements Navi
 //                }
 //            }
 //        });
-        CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsingToolbarLayout_mainPage);
+        CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsingToolbarLayout_list);
         collapsingToolbarLayout.setTitle("新竹市資料");
     }
 
@@ -180,7 +180,7 @@ public class Information_List_Activity extends AppCompatActivity implements Navi
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager_container);
         viewPager.setAdapter(adapter);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout_mainPage);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout_list);
         tabLayout.setupWithViewPager(viewPager);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -239,9 +239,10 @@ public class Information_List_Activity extends AppCompatActivity implements Navi
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
+
     private void setupBottomNavigationView(){
         Log.d(TAG, "setupBottomNavigationView: setting up BottomNavigationView");
-        BottomNavigationViewEx bottomNavigationViewEx = (BottomNavigationViewEx) findViewById(R.id.bottom_navigation_list);
+        BottomNavigationViewEx bottomNavigationViewEx = (BottomNavigationViewEx) findViewById(R.id.bottom_navigation);
         BottomNavigationViewHelper bottomNavigationViewHelper = null;
         bottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
         bottomNavigationViewHelper.enableNavigation(mContext, bottomNavigationViewEx);

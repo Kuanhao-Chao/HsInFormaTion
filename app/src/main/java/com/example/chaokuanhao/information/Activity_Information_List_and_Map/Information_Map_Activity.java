@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -28,7 +27,7 @@ import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 public class Information_Map_Activity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
 
-    private static final String TAG = Information_List_Activity.class.getSimpleName();
+    private static final String TAG = Information_Map_Activity.class.getSimpleName();
     private static final int ACTIVITY_NUM = 1;
     private Context mContext = Information_Map_Activity.this;
 
@@ -55,15 +54,15 @@ public class Information_Map_Activity extends AppCompatActivity implements Navig
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_information_map);
-
-        setupBottomNavigationView();
+        setContentView(R.layout.activity_main_menu_map);
 
 //        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation_map);
 //        bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolBar_mainPage);
-        setSupportActionBar(toolbar);               // this one is for old version
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolBar_map);         // this one is for old version
+        toolbar.setTitle("新竹市地圖");
+
+        setupBottomNavigationView();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -71,7 +70,7 @@ public class Information_Map_Activity extends AppCompatActivity implements Navig
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        // this one is find the main menu
+//         this one is find the main menu
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
@@ -84,6 +83,7 @@ public class Information_Map_Activity extends AppCompatActivity implements Navig
         getMenuInflater().inflate(R.menu.menu_additional, menu);
         return true;
     }
+
     /**
      * This function is to send the MenuItem to the menu.
      */
@@ -135,7 +135,7 @@ public class Information_Map_Activity extends AppCompatActivity implements Navig
      */
     private void setupBottomNavigationView(){
         Log.d(TAG, "setupBottomNavigationView: setting up BottomNavigationView");
-        BottomNavigationViewEx bottomNavigationViewEx = (BottomNavigationViewEx) findViewById(R.id.bottom_navigation_list);
+        BottomNavigationViewEx bottomNavigationViewEx = (BottomNavigationViewEx) findViewById(R.id.bottom_navigation);
         BottomNavigationViewHelper bottomNavigationViewHelper = null;
         bottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
         bottomNavigationViewHelper.enableNavigation(mContext, bottomNavigationViewEx);
@@ -144,3 +144,4 @@ public class Information_Map_Activity extends AppCompatActivity implements Navig
         menuItem.setChecked(true);
     }
 }
+
