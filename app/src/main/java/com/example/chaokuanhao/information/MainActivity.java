@@ -6,6 +6,10 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+/**
+ * Created by chaokuanhao on 21/11/2017.
+ */
+
 import com.example.chaokuanhao.information.Activity_Information_List_and_Map.Information_List_Activity;
 
 public class MainActivity extends AppCompatActivity {

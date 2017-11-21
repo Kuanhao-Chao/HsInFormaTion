@@ -27,14 +27,23 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.design.widget.BottomNavigationView
+    <!--<android.support.design.widget.BottomNavigationView-->
+        <!--android:id="@+id/bottom_navigation_map"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="bottom"-->
+        <!--android:background="?android:attr/windowBackground"-->
+        <!--app:menu="@menu/menu_information_bottom_navigation"/>-->
+
+    <com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx
         android:id="@+id/bottom_navigation_map"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:background="?android:attr/windowBackground"
-        app:menu="@menu/menu_information_bottom_navigation"/>
-
-
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/white_grey_border_top"
+        app:itemIconTint="@color/selector_item_color"
+        app:itemTextColor="@color/selector_item_color"
+        app:menu="@menu/menu_information_bottom_navigation"
+        android:layout_gravity="bottom"/>
 
 </android.support.design.widget.CoordinatorLayout>

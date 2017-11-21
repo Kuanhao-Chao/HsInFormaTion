@@ -1,5 +1,6 @@
 package com.example.chaokuanhao.information.Activity_Information_List_and_Map;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,6 +16,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -23,13 +25,19 @@ import com.example.chaokuanhao.information.Fragment_Information.Information_AED_
 import com.example.chaokuanhao.information.Fragment_Information.Information_Hydrant_Fragment;
 import com.example.chaokuanhao.information.Fragment_Information.Information_Police_Station_Fragment;
 import com.example.chaokuanhao.information.R;
+import com.example.chaokuanhao.information.Utils.BottomNavigationViewHelper;
 import com.example.chaokuanhao.information.Utils.SectionPagerAdapter;
+import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 /**
  * Created by chaokuanhao on 21/11/2017.
  */
 
 public class Information_List_Activity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+
+    private static final String TAG = Information_List_Activity.class.getSimpleName();
+    private static final int ACTIVITY_NUM = 0;
+    private Context mContext = Information_List_Activity.this;
 
     public enum appBarState {
         EXPANDED,
@@ -40,37 +48,38 @@ public class Information_List_Activity extends AppCompatActivity implements Navi
     private appBarState mCurrentState = appBarState.IDLE;
 
 
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.bottom_navigation_list_child:
-
-                    return true;
-
-                case R.id.bottom_navigation_map_child:
-                    Intent intent = new Intent();
-                    intent.setClass( Information_List_Activity.this, Information_Map_Activity.class);
-                    startActivity(intent);
-                    return true;
-            }
-            return false;
-        }
-
-    };
+//    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+//            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+//        @Override
+//        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+//            switch (item.getItemId()) {
+//                case R.id.bottom_navigation_list_child:
+//
+//                    return true;
+//
+//                case R.id.bottom_navigation_map_child:
+//                    Intent intent = new Intent();
+//                    intent.setClass( Information_List_Activity.this, Information_Map_Activity.class);
+//                    startActivity(intent);
+//                    return true;
+//            }
+//            return false;
+//        }
+//
+//    };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
 
-        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation_list);
-        bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+//        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation_list);
+//        bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolBar_mainPage);
         setSupportActionBar(toolbar);               // this one is for old version
 
+        setupBottomNavigationView();
         initInstanceDrawer( );
         setupViewPager();
 
@@ -230,8 +239,15 @@ public class Information_List_Activity extends AppCompatActivity implements Navi
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
-
     private void setupBottomNavigationView(){
-
+        Log.d(TAG, "setupBottomNavigationView: setting up BottomNavigationView");
+        BottomNavigationViewEx bottomNavigationViewEx = (BottomNavigationViewEx) findViewById(R.id.bottom_navigation_list);
+        BottomNavigationViewHelper bottomNavigationViewHelper = null;
+        bottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
+        bottomNavigationViewHelper.enableNavigation(mContext, bottomNavigationViewEx);
+        Menu menu = bottomNavigationViewEx.getMenu();
+        MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
+        menuItem.setChecked(true);
     }
+
 }

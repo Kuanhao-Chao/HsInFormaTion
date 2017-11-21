@@ -11,7 +11,6 @@ import java.util.List;
  * Created by chaokuanhao on 21/11/2017.
  */
 
-
 public class SectionPagerAdapter extends FragmentPagerAdapter {
 
     private static final String TAG = SectionPagerAdapter.class.getSimpleName();
