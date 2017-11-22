@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Activity_Information_List_and_Map.Information_Map_Activity">
+    tools:context=".Activity_Main_Menu.Activity_Information.Information_Map_Activity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBar_map"

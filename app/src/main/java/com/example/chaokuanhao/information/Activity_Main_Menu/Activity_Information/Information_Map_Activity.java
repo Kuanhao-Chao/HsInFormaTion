@@ -1,4 +1,4 @@
-package com.example.chaokuanhao.information.Activity_Information_List_and_Map;
+package com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Information;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,7 +15,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.example.chaokuanhao.information.Activity_Main_Menu.Transportation;
+import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Daily_Reminder.Activity_Daily_Reminder_Intro;
 import com.example.chaokuanhao.information.R;
 import com.example.chaokuanhao.information.Utils.BottomNavigationViewHelper;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
@@ -61,6 +61,9 @@ public class Information_Map_Activity extends AppCompatActivity implements Navig
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolBar_map);         // this one is for old version
         toolbar.setTitle("新竹市地圖");
+//        Menu menu = null;
+//        getMenuInflater().inflate(R.menu.menu_additional , menu);
+        toolbar.showContextMenu();
 
         setupBottomNavigationView();
 
@@ -122,7 +125,7 @@ public class Information_Map_Activity extends AppCompatActivity implements Navig
         }
         else if ( id == R.id.activity_main_menu_transportationInformation){
             Intent intent = new Intent();
-            intent.setClass( Information_Map_Activity.this, Transportation.class);
+            intent.setClass( Information_Map_Activity.this, Activity_Daily_Reminder_Intro.class);
             startActivity(intent);
         }
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -131,7 +134,7 @@ public class Information_Map_Activity extends AppCompatActivity implements Navig
     }
 
     /**
-     * this function is to control the bottom navigationview for Information !! called in Oncreate
+     * this function is to control the bottom navigationview for Information_activity!! called in Oncreate
      */
     private void setupBottomNavigationView(){
         Log.d(TAG, "setupBottomNavigationView: setting up BottomNavigationView");

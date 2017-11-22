@@ -1,4 +1,4 @@
-package com.example.chaokuanhao.information.Fragment_Information;
+package com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Information.Fragment_Information;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,7 +13,7 @@ import com.example.chaokuanhao.information.R;
  * Created by chaokuanhao on 21/11/2017.
  */
 
-public class Information_Police_Station_Fragment extends Fragment{
+public class Information_AED_Fragment extends Fragment{
     /**
      * Called to have the fragment instantiate its user interface view.
      * This is optional, and non-graphical fragments can return null (which
@@ -35,7 +35,7 @@ public class Information_Police_Station_Fragment extends Fragment{
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_information_police_station, container, false);
+        View view = inflater.inflate(R.layout.fragment_information_aed, container, false);
         return view;
     }
 }

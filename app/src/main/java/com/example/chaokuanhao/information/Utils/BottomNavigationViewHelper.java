@@ -6,8 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.util.Log;
 import android.view.MenuItem;
-import com.example.chaokuanhao.information.Activity_Information_List_and_Map.Information_List_Activity;
-import com.example.chaokuanhao.information.Activity_Information_List_and_Map.Information_Map_Activity;
+import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Information.Information_List_Activity;
+import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Information.Information_Map_Activity;
 import com.example.chaokuanhao.information.R;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 

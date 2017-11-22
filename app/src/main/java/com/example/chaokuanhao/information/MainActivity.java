@@ -10,8 +10,7 @@ import android.view.MenuItem;
  * Created by chaokuanhao on 21/11/2017.
  */
 
-import com.example.chaokuanhao.information.Activity_Information_List_and_Map.Information_List_Activity;
-import com.example.chaokuanhao.information.Activity_Information_List_and_Map.Information_Map_Activity;
+import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Information.Information_List_Activity;
 
 public class MainActivity extends AppCompatActivity {
 

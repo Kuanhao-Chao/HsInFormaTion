@@ -32,4 +32,5 @@ dependencies {
     //Bottom navigation extend library
     compile 'com.github.ittianyu:BottomNavigationViewEx:1.2.4'
     testCompile 'junit:junit:4.12'
+    compile 'com.github.apl-devs:appintro:v4.2.2'
 }

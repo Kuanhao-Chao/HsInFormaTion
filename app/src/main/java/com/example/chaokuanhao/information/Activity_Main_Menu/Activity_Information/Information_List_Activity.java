@@ -1,4 +1,4 @@
-package com.example.chaokuanhao.information.Activity_Information_List_and_Map;
+package com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Information;
 
 import android.content.Context;
 import android.content.Intent;
@@ -19,10 +19,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.example.chaokuanhao.information.Activity_Main_Menu.Transportation;
-import com.example.chaokuanhao.information.Fragment_Information.Information_AED_Fragment;
-import com.example.chaokuanhao.information.Fragment_Information.Information_Hydrant_Fragment;
-import com.example.chaokuanhao.information.Fragment_Information.Information_Police_Station_Fragment;
+import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Daily_Reminder.Activity_Daily_Reminder_Intro;
+import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Information.Fragment_Information.Information_AED_Fragment;
+import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Information.Fragment_Information.Information_Hydrant_Fragment;
+import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Information.Fragment_Information.Information_Police_Station_Fragment;
 import com.example.chaokuanhao.information.R;
 import com.example.chaokuanhao.information.Utils.BottomNavigationViewHelper;
 import com.example.chaokuanhao.information.Utils.SectionPagerAdapter;
@@ -38,13 +38,13 @@ public class Information_List_Activity extends AppCompatActivity implements Navi
     private static final int ACTIVITY_NUM = 0;
     private Context mContext = Information_List_Activity.this;
 
-    public enum appBarState {
-        EXPANDED,
-        COLLAPSED,
-        IDLE
-    }
-
-    private appBarState mCurrentState = appBarState.IDLE;
+//    private enum appBarState {
+//        EXPANDED,
+//        COLLAPSED,
+//        IDLE
+//    }
+//
+//    private appBarState mCurrentState = appBarState.IDLE;
 
 
 //    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -232,7 +232,7 @@ public class Information_List_Activity extends AppCompatActivity implements Navi
         }
         else if ( id == R.id.activity_main_menu_transportationInformation){
             Intent intent = new Intent();
-            intent.setClass( Information_List_Activity.this, Transportation.class);
+            intent.setClass( Information_List_Activity.this, Activity_Daily_Reminder_Intro.class);
             startActivity(intent);
         }
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
