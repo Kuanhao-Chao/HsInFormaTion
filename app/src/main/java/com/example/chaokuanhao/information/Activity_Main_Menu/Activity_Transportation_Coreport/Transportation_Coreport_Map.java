@@ -3,6 +3,7 @@ package com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transpor
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -12,11 +13,16 @@ import android.provider.Telephony;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
@@ -27,6 +33,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Daily_Reminder.Activity_Daily_Reminder_Intro;
+import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Information.Information_List_Activity;
+import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Information.Information_Map_Activity;
 import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.models.Adapter_PlaceInfo;
 import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.models.PlaceInfo;
 import com.example.chaokuanhao.information.R;
@@ -67,7 +76,7 @@ import java.util.List;
  */
 
 public class Transportation_Coreport_Map extends AppCompatActivity implements OnMapReadyCallback,
-        GoogleApiClient.OnConnectionFailedListener{
+        GoogleApiClient.OnConnectionFailedListener, NavigationView.OnNavigationItemSelectedListener{
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -95,7 +104,7 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
         }
     }
 
-    private static final String TAG = "MapActivity";
+    private static final String TAG = Transportation_Coreport_Map.class.getCanonicalName();
 
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
@@ -108,7 +117,8 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
 
     //widgets
     private AutoCompleteTextView mSearchText;
-    private ImageView mGps, mInfo, mPlacePicker;
+    private ImageView mGps, mInfo, mPlacePicker, mMainMenu;
+    private DrawerLayout mDrawer;
 
     //vars
     private Boolean mLocationPermissionsGranted = false;
@@ -122,13 +132,44 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_transportation_coreport_map);
+        setContentView(R.layout.activity_main_menu_transportation_coreport);
         mSearchText = (AutoCompleteTextView) findViewById(R.id.input_search);
         mGps = (ImageView) findViewById(R.id.ic_action_gps);
         mInfo = (ImageView) findViewById(R.id.place_info);
         mPlacePicker = (ImageView) findViewById( R.id.place_picker);
+        mMainMenu = (ImageView) findViewById( R.id.main_menu);
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         getLocationPermission();
 
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    /**
+     * Called when an item in the navigation menu is selected.~~ the main menu !!
+     *
+     * @param item The selected item
+     * @return true to display the item as the selected item
+     */
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if ( id == R.id.activity_main_menu_ic_emergencyInformation){
+            Intent intent = new Intent();
+            intent.setClass( Transportation_Coreport_Map.this, Information_List_Activity.class);
+            startActivity(intent);
+        }
+        else if ( id == R.id.activity_main_menu_daily_reminder){
+            Intent intent = new Intent();
+            intent.setClass( Transportation_Coreport_Map.this, Activity_Daily_Reminder_Intro.class);
+            startActivity(intent);
+        }
+        else if ( id == R.id.activity_main_menu_transportation_coreport){
+
+        }
+        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return true;
     }
 
     private void init(){
@@ -203,6 +244,13 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
                     e.printStackTrace();
                 }
 
+            }
+        });
+        mMainMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClick: clicked main menu");
+                mDrawer.openDrawer(Gravity.LEFT);
             }
         });
 

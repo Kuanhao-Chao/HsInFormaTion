@@ -18,16 +18,14 @@
         android:layout_marginLeft="10dp"
         android:elevation="10dp"
         android:background="@drawable/white_border"
-        android:id="@+id/relLayout1"
-        >
+        android:id="@+id/relLayout1">
         <ImageView
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:id="@+id/ic_manify"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
-            android:src="@drawable/ic_action_magnify"
-            />
+            android:src="@drawable/ic_action_magnify" />
         <AutoCompleteTextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -37,9 +35,10 @@
             android:textColor="#000"
             android:id="@+id/input_search"
             android:background="@null"
-            android:hint="Enter Address or City or Zip code."
-            android:imeOptions="actionSearch"
-            />
+            android:hint="  Enter Address or City or Zip code."
+            android:textColorHint="@color/grey"
+            android:imeOptions="actionSearch" />
+
     </RelativeLayout>
         <ImageView
             android:layout_width="40dp"
@@ -51,6 +50,15 @@
             android:scaleType="centerCrop"
             android:id="@+id/ic_action_gps"
             android:src="@drawable/ic_action_gps"/>
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:id="@+id/main_menu"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:scaleType="centerCrop"
+        android:layout_below="@id/relLayout1"
+        android:src="@drawable/ic_action_main_menu"/>
 
         <ImageView
             android:layout_width="40dp"
@@ -59,7 +67,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginTop="15dp"
             android:scaleType="centerCrop"
-            android:layout_below="@+id/relLayout1"
+            android:layout_below="@+id/main_menu"
             android:src="@drawable/ic_action_pick"/>
         <ImageView
             android:layout_width="40dp"

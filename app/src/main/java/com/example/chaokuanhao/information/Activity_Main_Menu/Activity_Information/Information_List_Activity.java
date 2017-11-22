@@ -71,7 +71,7 @@ public class Information_List_Activity extends AppCompatActivity implements Navi
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_menu_information);
+        setContentView(R.layout.activity_main_menu_information_list);
 
 //        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation_list);
 //        bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
