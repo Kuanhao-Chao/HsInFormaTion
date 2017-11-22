@@ -33,4 +33,7 @@ dependencies {
     compile 'com.github.ittianyu:BottomNavigationViewEx:1.2.4'
     testCompile 'junit:junit:4.12'
     compile 'com.github.apl-devs:appintro:v4.2.2'
+    compile 'com.google.android.gms:play-services-maps:11.6.0'
+    compile 'com.google.android.gms:play-services-places:11.6.0'
+    compile 'com.google.android.gms:play-services-location:11.6.0'      // fusedlocation need to compile this
 }

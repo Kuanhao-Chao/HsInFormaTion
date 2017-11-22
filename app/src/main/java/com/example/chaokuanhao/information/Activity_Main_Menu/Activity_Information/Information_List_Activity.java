@@ -23,6 +23,7 @@ import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Daily_Rem
 import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Information.Fragment_Information.Information_AED_Fragment;
 import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Information.Fragment_Information.Information_Hydrant_Fragment;
 import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Information.Fragment_Information.Information_Police_Station_Fragment;
+import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.Transportation_Coreport_Map;
 import com.example.chaokuanhao.information.R;
 import com.example.chaokuanhao.information.Utils.BottomNavigationViewHelper;
 import com.example.chaokuanhao.information.Utils.SectionPagerAdapter;
@@ -230,9 +231,14 @@ public class Information_List_Activity extends AppCompatActivity implements Navi
         if ( id == R.id.activity_main_menu_ic_emergencyInformation){
 
         }
-        else if ( id == R.id.activity_main_menu_transportationInformation){
+        else if ( id == R.id.activity_main_menu_daily_reminder){
             Intent intent = new Intent();
             intent.setClass( Information_List_Activity.this, Activity_Daily_Reminder_Intro.class);
+            startActivity(intent);
+        }
+        else if ( id == R.id.activity_main_menu_transportation_coreport){
+            Intent intent = new Intent();
+            intent.setClass( Information_List_Activity.this, Transportation_Coreport_Map.class);
             startActivity(intent);
         }
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);

@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Daily_Reminder.Activity_Daily_Reminder_Intro;
+import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.Transportation_Coreport_Map;
 import com.example.chaokuanhao.information.R;
 import com.example.chaokuanhao.information.Utils.BottomNavigationViewHelper;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
@@ -60,7 +61,12 @@ public class Information_Map_Activity extends AppCompatActivity implements Navig
 //        bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolBar_map);         // this one is for old version
+        setSupportActionBar(toolbar);
+        // so that toolbar can replace the function of actionbar.
+        // return an actionbar that can control the given toolbar
         toolbar.setTitle("新竹市地圖");
+        //~~Important ! Manifest > java > xml
+
 //        Menu menu = null;
 //        getMenuInflater().inflate(R.menu.menu_additional , menu);
         toolbar.showContextMenu();
@@ -123,9 +129,14 @@ public class Information_Map_Activity extends AppCompatActivity implements Navig
         if ( id == R.id.activity_main_menu_ic_emergencyInformation){
 
         }
-        else if ( id == R.id.activity_main_menu_transportationInformation){
+        else if ( id == R.id.activity_main_menu_daily_reminder){
             Intent intent = new Intent();
             intent.setClass( Information_Map_Activity.this, Activity_Daily_Reminder_Intro.class);
+            startActivity(intent);
+        }
+        else if ( id == R.id.activity_main_menu_transportation_coreport){
+            Intent intent = new Intent();
+            intent.setClass( Information_Map_Activity.this, Transportation_Coreport_Map.class);
             startActivity(intent);
         }
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);

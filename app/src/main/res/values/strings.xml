@@ -6,4 +6,6 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="Google_api_keys">AIzaSyDVPsNx_tyb7vstBN28ppjvjRiyybpzs7s</string>
 </resources>
