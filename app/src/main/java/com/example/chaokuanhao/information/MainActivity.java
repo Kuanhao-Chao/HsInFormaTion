@@ -3,6 +3,7 @@ package com.example.chaokuanhao.information;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -20,6 +21,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entry_point);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_entry);
+        setSupportActionBar(toolbar);
+
         Intent intent = new Intent();
         intent.setClass(MainActivity.this, Information_List_Activity.class);
         startActivity(intent);

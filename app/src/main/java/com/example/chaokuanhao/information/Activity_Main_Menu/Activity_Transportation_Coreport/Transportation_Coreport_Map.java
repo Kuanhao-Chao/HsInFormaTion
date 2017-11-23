@@ -257,6 +257,12 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
         hideSoftKeyboard();
     }
 
+    /**
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     protected void onActivityResult(int requestCode, int resultCode, Intent data ){
         if (requestCode == PLACE_PICKER_REQUEST ){
             if ( resultCode == RESULT_OK ){
@@ -270,6 +276,9 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
         }
     }
 
+    /**
+     *
+     */
     private void geoLocate(){
         Log.d(TAG, "geoLocate: geolocating");
 
@@ -294,6 +303,9 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
         }
     }
 
+    /**
+     * to get the current location of the phone!!!
+     */
     private void getDeviceLocation(){
         Log.d(TAG, "getDeviceLocation: getting the devices current location");
 
@@ -326,6 +338,13 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
         }
     }
 
+    /**
+     * to set the center of the map on the phone~
+     * This one is to send the PlaceInfo instance to call the function
+     * @param latLng
+     * @param zoom
+     * @param placeInfo
+     */
     private void moveCamera(LatLng latLng, float zoom, PlaceInfo placeInfo){
         Log.d(TAG, "moveCamera: moving the camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude );
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
@@ -357,6 +376,14 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
         hideSoftKeyboard();
     }
 
+
+    /**
+     * to set the center of the map on the phone~
+     * This one is to send the title String to call the function
+     * @param latLng
+     * @param zoom
+     * @param title
+     */
     private void moveCamera(LatLng latLng, float zoom, String title){
         Log.d(TAG, "moveCamera: moving the camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude );
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
@@ -371,6 +398,9 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
         hideSoftKeyboard();
     }
 
+    /**
+     * to bind the map to the fragment!!
+     */
     private void initMap(){
         Log.d(TAG, "initMap: initializing map");
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.transportation_coreport_map);
@@ -433,6 +463,9 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
         --------------------------- google places API autocomplete suggestions -----------------
      */
 
+    /**
+     * the autocomplete list appears when the use is typing~~ this is to set the onclickListener on these dynamic lists
+     */
     private AdapterView.OnItemClickListener mAutocompleteClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -447,6 +480,9 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
         }
     };
 
+    /**
+     * this function is to store the details of place into the PlaceInfo object and return ResultCallback~~
+     */
     private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback = new ResultCallback<PlaceBuffer>() {
         @Override
         public void onResult(@NonNull PlaceBuffer places) {
