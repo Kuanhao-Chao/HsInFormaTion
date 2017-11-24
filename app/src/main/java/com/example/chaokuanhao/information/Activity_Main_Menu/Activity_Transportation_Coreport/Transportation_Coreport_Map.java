@@ -1,6 +1,7 @@
 package com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -22,6 +23,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -39,6 +41,10 @@ import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Informati
 import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.models.Adapter_PlaceInfo;
 import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.models.PlaceInfo;
 import com.example.chaokuanhao.information.R;
+import com.flipboard.bottomsheet.BottomSheetLayout;
+import com.flipboard.bottomsheet.OnSheetDismissedListener;
+import com.flipboard.bottomsheet.commons.IntentPickerSheetView;
+import com.flipboard.bottomsheet.commons.MenuSheetView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -106,6 +112,7 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
 
     private static final String TAG = Transportation_Coreport_Map.class.getCanonicalName();
 
+    private  final Context context = Transportation_Coreport_Map.this;
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
@@ -114,11 +121,25 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
     private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(
             new LatLng(-40, -168), new LatLng(71, 136));
 
+    private enum Report_accident_code {
+        PROBLEM_SOLVED,
+        CAR_ACCIDENT,
+        TRAFFIC_JAM,
+        ROAD_BLOCK,
+        BIG_ROAD_OBSTRUCTION,
+        TRAFFIC_LIGHT_BROKEN,
+        WIERD_SMELL,
+        FIRE,
+        OTHERS,
+
+        NULL;
+    }
 
     //widgets
     private AutoCompleteTextView mSearchText;
     private ImageView mGps, mInfo, mPlacePicker, mMainMenu;
     private DrawerLayout mDrawer;
+    private BottomSheetLayout mbottomSheetLayout;
 
     //vars
     private Boolean mLocationPermissionsGranted = false;
@@ -126,8 +147,11 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private Place_AutoComplete_Adapter mPlaceAutocompleteAdapter;
     private GoogleApiClient mGoogleApiClient;
-    private PlaceInfo mPlace;
+    private PlaceInfo mPlace;   // this is to store the data whenever we pin a place!!
     private Marker mMarker;
+    private Report_accident_code mReportState = Report_accident_code.NULL;
+    private boolean self_scroll_down = true;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -139,6 +163,7 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
         mPlacePicker = (ImageView) findViewById( R.id.place_picker);
         mMainMenu = (ImageView) findViewById( R.id.main_menu);
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mbottomSheetLayout = (BottomSheetLayout) findViewById(R.id.transportation_coreport_bottomsheet);
         getLocationPermission();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -233,6 +258,7 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
         mPlacePicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Builder for a Place Picker launch intent. ( the new activity for choosing location )
                 PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
                 try{
                     startActivityForResult( builder.build(Transportation_Coreport_Map.this), PLACE_PICKER_REQUEST );
@@ -258,20 +284,122 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
     }
 
     /**
-     *
-     * @param requestCode
-     * @param resultCode
-     * @param data
+     * parent activity is linked with many child activities.
+     * When go back from child activity to parent activity with some data, then we need to use onActivityResult!!
+     * @param requestCode : to make sure the returned data is from which Activity!! In this case PLACE_PICKER_REQUEST is the request code!!!
+     * @param resultCode : the child activity returned resultCode by setResult
+     * @param data : the data that are going to return back to the parent activity!!
      */
     protected void onActivityResult(int requestCode, int resultCode, Intent data ){
         if (requestCode == PLACE_PICKER_REQUEST ){
             if ( resultCode == RESULT_OK ){
+                // PlacePicker.getPlace() is api function to get the location of the place picker!!!
+                // We store the return data in place !!
+                // Place object to store the place information!!! api object!!
                 Place place = PlacePicker.getPlace( this, data);
-                String toastMsg = String.format("Place: %s", place.getName());
+                final String toastMsg = String.format("Place: %s", place.getName());
                 Toast.makeText(this, toastMsg, Toast.LENGTH_SHORT).show();
+
+                // Place.getId() ==> to get the ID by place
+                // So after we go back from the place slection to the map view, data in mPlace will be updated!!
                 PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
                         .getPlaceById(mGoogleApiClient, place.getId());
                 placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
+                // now the data is updated~~
+
+                // this one is to popup the bottom view by the selfdesigned view
+//                mbottomSheetLayout.showWithSheetView(LayoutInflater.from(context).inflate(R.layout.activity_transportation_coreport_map_bottomsheet, mbottomSheetLayout, false));
+
+                mbottomSheetLayout.addOnSheetDismissedListener(new OnSheetDismissedListener() {
+                    @Override
+                    public void onDismissed(BottomSheetLayout bottomSheetLayout) {
+
+                        if ( self_scroll_down ){
+                            Toast.makeText(Transportation_Coreport_Map.this, "回報失敗，請重新點選", Toast.LENGTH_LONG).show();
+                            // to reset the report accident
+                            mReportState = Report_accident_code.NULL;
+                        }
+                        else{
+                            //Scroll down without doing anything!!
+//                            self_scroll_down = true;
+                        }
+
+                    }
+                });
+
+//                mbottomSheetLayout.addOnSheetDismissedListener( onSheetDismissedListener );
+
+//                mbottomSheetLayout.setTouchscreenBlocksFocus(false);
+//                mbottomSheetLayout.scr
+                MenuSheetView menuSheetView =
+                        new MenuSheetView(Transportation_Coreport_Map.this, MenuSheetView.MenuType.GRID, "請選擇下列事項回報", new MenuSheetView.OnMenuItemClickListener() {
+
+//                            /**
+//                             * Adds an {@link OnSheetDismissedListener} which will be notified when the state of the presented sheet changes.
+//                             *
+//                             * @param onSheetDismissedListener the listener to be notified.
+//                             */
+//                            @Override
+//                            public void addOnSheetDismissedListener(@NonNull OnSheetDismissedListener onSheetDismissedListener){
+//
+//                            }
+                            @Override
+                            public boolean onMenuItemClick(MenuItem item) {
+                                self_scroll_down = false;
+                                Toast.makeText(Transportation_Coreport_Map.this, item.getTitle(), Toast.LENGTH_SHORT).show();
+                                String id_to_send = null;
+
+                                switch (item.getTitle().toString()){
+                                    case "違規停車":
+                                        id_to_send = "ic_action_car_accident";
+                                        break;
+                                    case "車禍":
+                                        id_to_send = "ic_action_caraccident";
+                                        break;
+                                    case"塞車":
+                                        id_to_send = "ic_action_traffic_jam";
+                                        break;
+                                    case "道路封閉":
+                                        id_to_send = "ic_action_car_road_block";
+                                        break;
+                                    case "大型障礙物":
+                                        id_to_send = "ic_action_road_big_block";
+                                        break;
+                                    case "交通號誌故障":
+                                        id_to_send = "ic_action_traffic_light_broken";
+                                        break;
+                                    case "異常臭味":
+                                        id_to_send = "ic_action_smelly";
+                                        break;
+                                    case "火災":
+                                        id_to_send = "ic_action_fire";
+                                        break;
+                                    case "其他":
+                                        id_to_send = "ic_action_others";
+                                        break;
+                                    default:
+                                        break;
+                                }
+
+                                Log.d( TAG, "Howard"+String.valueOf(item.getItemId()));
+                                if (mbottomSheetLayout.isSheetShowing()) {
+                                    mbottomSheetLayout.dismissSheet();
+                                }
+                                // pop up the dialog window!!
+                                LatLng latLng_dialog = mPlace.getLatlng();
+                                String latitude_dialog = String.valueOf(latLng_dialog.latitude);
+                                String longitude_dialog = String.valueOf(latLng_dialog.longitude);
+                                String toPass = "( "+ latitude_dialog + ", " + longitude_dialog + " )";
+                                Fragment_Dialog_Confirm_Report_Information fragment_dialog_confirm_report_information = new Fragment_Dialog_Confirm_Report_Information().newInstance( latitude_dialog,longitude_dialog, item.getTitle().toString(),id_to_send);
+                                fragment_dialog_confirm_report_information.show(getFragmentManager(), "Transportation_coreport_map_popup_dialog_accident_report");
+
+                                return true;
+                            }
+                        });
+
+
+                menuSheetView.inflateMenu(R.menu.menu_transportation_coreport_accident_report);
+                mbottomSheetLayout.showWithSheetView(menuSheetView);
             }
         }
     }
@@ -431,6 +559,7 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
         }
     }
 
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         Log.d(TAG, "onRequestPermissionsResult: called.");
@@ -474,6 +603,9 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
             final AutocompletePrediction item = mPlaceAutocompleteAdapter.getItem(i);
             final String placeId = item.getPlaceId();
 
+            // we get the place by ID when we click the autocomplete list~~
+            // And data will be stored in mPlace~~~
+            // So after clicked the data of mPlace will be changed!!
             PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
                     .getPlaceById(mGoogleApiClient, placeId);
             placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
@@ -482,6 +614,9 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
 
     /**
      * this function is to store the details of place into the PlaceInfo object and return ResultCallback~~
+     * Pending Result !! data can be retrived back by two way :
+     *      1. await() or await( long, TimeUnit )
+     *      2. by passing in an object implementing interface ResultCallBack to setResultCallBack
      */
     private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback = new ResultCallback<PlaceBuffer>() {
         @Override
@@ -503,7 +638,7 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
 //                Log.d(TAG, "onResult: attributions: " + place.getAttributions());
                 mPlace.setId(place.getId());
                 Log.d(TAG, "onResult: id:" + place.getId());
-                mPlace.setLatlng(place.getLatLng());
+                mPlace.setLatlng(place.getLatLng());                        // important ! to return the Latlng to send the data
                 Log.d(TAG, "onResult: latlng: " + place.getLatLng());
                 mPlace.setRating(place.getRating());
                 Log.d(TAG, "onResult: rating: " + place.getRating());

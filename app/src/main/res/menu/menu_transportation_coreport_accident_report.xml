@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/car_pull_randomly"
+        android:title="違規停車"
+        android:icon="@drawable/ic_action_car_accident"/>
+    <item
+        android:id="@+id/car_accident"
+        android:title="車禍"
+        android:icon="@drawable/ic_action_caraccident"/>
+    <item
+        android:id="@+id/traffic_jam"
+        android:title="塞車"
+        android:icon="@drawable/ic_action_traffic_jam"/>
+    <item
+        android:id="@+id/road_block"
+        android:title="道路封閉"
+        android:icon="@drawable/ic_action_car_road_block"/>
+    <item
+        android:id="@+id/big_road_obstruction"
+        android:title="大型障礙物"
+        android:icon="@drawable/ic_action_road_big_block"/>
+    <item
+        android:id="@+id/traffic_light_broken"
+        android:title="交通號誌故障"
+        android:icon="@drawable/ic_action_traffic_light_broken"/>
+
+    <item
+        android:id="@+id/wierd_smell"
+        android:title="異常臭味"
+        android:icon="@drawable/ic_action_smelly"/>
+    <item
+        android:id="@+id/fire"
+        android:title="火災"
+        android:icon="@drawable/ic_action_fire"/>
+    <item
+        android:id="@+id/others"
+        android:title="其他"
+        android:icon="@drawable/ic_action_others"/>
+</menu><!--private enum Report_remove_accident_code {--><!--HAVE_STATE,--><!--NO_STATAE,-->
+
+    <!--NULL;--><!--}-->
+
+    <!--private enum Report_accident_code {--><!--//Traffic--><!--CAR_ACCIDENT,--><!--TRAFFIC_JAM,--><!--ROAD_BLOCK,--><!--TRAFFIC_LIGHT_BROKEN,-->
+
+    <!--//Daily life--><!--WIERD_SMELL,--><!--FIRE,--><!--OTHERS,-->
+
+    <!--NULL;--><!--}-->
