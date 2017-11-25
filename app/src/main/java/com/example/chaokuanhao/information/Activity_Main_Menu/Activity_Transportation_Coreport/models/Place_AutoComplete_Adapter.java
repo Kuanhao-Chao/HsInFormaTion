@@ -1,4 +1,4 @@
-package com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport;
+package com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.models;
 /*
  * Copyright (C) 2015 Google Inc. All Rights Reserved.
  *

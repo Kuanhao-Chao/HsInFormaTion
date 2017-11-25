@@ -4,16 +4,13 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.media.Image;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.Telephony;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringDef;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -23,41 +20,40 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Daily_Reminder.Activity_Daily_Reminder_Intro;
 import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Information.Information_List_Activity;
-import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Information.Information_Map_Activity;
+import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.Dialog_Report_Confirm.Fragment_Dialog_Confirm_Report_Information;
+import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.Dialog_Report_Confirm.Fragment_Dialog_Confirm_Report_Others;
+import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.Parameter.Parameter_FireDep;
+import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.Parameter.Parameter_Police;
 import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.models.Adapter_PlaceInfo;
+import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.Parameter.Parameter_Accident_Point_Coreport;
+import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.Parameter.Parameter_FireDep_Police;
 import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.models.PlaceInfo;
+import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.models.Place_AutoComplete_Adapter;
 import com.example.chaokuanhao.information.R;
 import com.flipboard.bottomsheet.BottomSheetLayout;
 import com.flipboard.bottomsheet.OnSheetDismissedListener;
-import com.flipboard.bottomsheet.commons.IntentPickerSheetView;
 import com.flipboard.bottomsheet.commons.MenuSheetView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.Result;
 import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.images.ImageManager;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.AutocompletePrediction;
-import com.google.android.gms.location.places.GeoDataApi;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
@@ -89,55 +85,128 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
 
     }
 
+    /**
+     *---------------------------- Map related function -----------------------------------
+     */
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        if (mMap != null) {
+            outState.putParcelable(KEY_CAMERA_POSITION, mMap.getCameraPosition());
+            outState.putParcelable(KEY_LOCATION, mLastKnownLocation);
+            super.onSaveInstanceState(outState);
+        }
+    }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         Toast.makeText(this, "Map is Ready", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "onMapReady: map is ready");
         mMap = googleMap;
 
-        if (mLocationPermissionsGranted) {
-            getDeviceLocation();
+        try{
+            if (mLocationPermissionsGranted) {
+                getDeviceLocation();
 
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
-                    Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                return;
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
+                        Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+                mMap.setMyLocationEnabled(true);
+                mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                mMap.getUiSettings().setMapToolbarEnabled(true);
+                mMap.getUiSettings().isCompassEnabled();
+                mMap.getUiSettings().setAllGesturesEnabled(true);
+
+                init();
             }
-            mMap.setMyLocationEnabled(true);
-            mMap.getUiSettings().setMyLocationButtonEnabled(false);
-
-            init();
+            else{
+                mMap.setMyLocationEnabled(false);
+                mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                getLocationPermission();
+            }
         }
+        catch (SecurityException e ){
+            Log.e( TAG, "onMapReady: SecurityException: " + e.getMessage());
+        }
+
+//        for ( int i = 0; i < FireDep_Result.size(); i++ ){
+//
+//            LatLng latLng = new LatLng( Double.parseDouble(FireDep_Result.get(i).getmFireDep_lat()), Double.parseDouble(FireDep_Result.get(i).getmFireDep_lng()));
+//            MarkerOptions markerOptions = new MarkerOptions();
+//            markerOptions.position(latLng);
+//            mMap.addMarker(markerOptions);
+//        }
+
     }
 
+    /**
+     * to bind the map to the fragment!!
+     */
+    private void initMap(){
+        Log.d(TAG, "initMap: initializing map");
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.transportation_coreport_map);
+
+        mapFragment.getMapAsync(Transportation_Coreport_Map.this);
+    }
+
+
+    /**
+     * --------------------------- Variable declaration -----------------------------------
+     */
+
     private static final String TAG = Transportation_Coreport_Map.class.getCanonicalName();
+
+    // For Asynctask
+    private static final String USGS_REQUEST_URL_REPORT_ACCIDENT = "http://192.168.0.110:5000/bell/";
+    private static final String USGS_REQUEST_URL_FIREDEP_POLICE = "http://114.34.123.174:8080/emerg";
+    private List<Parameter_Accident_Point_Coreport> Accident_Point_Result = new ArrayList<Parameter_Accident_Point_Coreport>();
+    private List<Parameter_FireDep> FireDep_Result = new ArrayList<Parameter_FireDep>();
+    private List<Parameter_Police> Police_Result = new ArrayList<Parameter_Police>();
+    private JSON_Parsing_FireDep json_parsing_fireDep = new JSON_Parsing_FireDep();
+    private JSON_Parsing_Police json_parsing_police = new JSON_Parsing_Police();
 
     private  final Context context = Transportation_Coreport_Map.this;
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
+    private Location mLastKnownLocation;
+    private Location mCurrentLocation;          // to get the state
+    private Location mCameraPosition;           // to get the state
+
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
+    private static final String KEY_CAMERA_POSITION = "camera_position";
+    private static final String KEY_LOCATION = "location";
     private static final float DEFAULT_ZOOM = 15f;
     private int PLACE_PICKER_REQUEST = 1;
     private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(
             new LatLng(-40, -168), new LatLng(71, 136));
 
     private enum Report_accident_code {
-        PROBLEM_SOLVED,
-        CAR_ACCIDENT,
-        TRAFFIC_JAM,
-        ROAD_BLOCK,
-        BIG_ROAD_OBSTRUCTION,
-        TRAFFIC_LIGHT_BROKEN,
-        WIERD_SMELL,
-        FIRE,
-        OTHERS,
+        CAR_PULL_RANDOMLY(0),
+        CAR_ACCIDENT(1),
+        TRAFFIC_JAM(2),
+        ROAD_BLOCK(3),
+        BIG_ROAD_OBSTRUCTION(4),
+        TRAFFIC_LIGHT_BROKEN(5),
+        WIERD_SMELL(6),
+        FIRE(7),
+        OTHERS(8),
 
-        NULL;
+        NULL(9);
+
+        private final int value;
+        private Report_accident_code ( int value){
+            this.value = value;
+        }
+        private int getValue(){
+            return value;
+        }
     }
 
     //widgets
     private AutoCompleteTextView mSearchText;
-    private ImageView mGps, mInfo, mPlacePicker, mMainMenu;
+    private ImageView mGps, mInfo, mPlacePicker, mMainMenu, mResync, mFireDep, mPolice;
     private DrawerLayout mDrawer;
     private BottomSheetLayout mbottomSheetLayout;
 
@@ -151,23 +220,51 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
     private Marker mMarker;
     private Report_accident_code mReportState = Report_accident_code.NULL;
     private boolean self_scroll_down = true;
+    private static boolean FireDep_Buttom_is_clicked = false;
+    private static boolean Police_Buttom_is_clicked = false;
+    private List<Marker> markers_fireDep = new ArrayList<Marker>();
+    private List<Marker> markers_police = new ArrayList<Marker>();
 
+    /**
+     *------------------------- essential function override ---------------------------------
+     */
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            mCurrentLocation = savedInstanceState.getParcelable(KEY_LOCATION);
+            mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
+        }
         setContentView(R.layout.activity_main_menu_transportation_coreport);
         mSearchText = (AutoCompleteTextView) findViewById(R.id.input_search);
         mGps = (ImageView) findViewById(R.id.ic_action_gps);
         mInfo = (ImageView) findViewById(R.id.place_info);
-        mPlacePicker = (ImageView) findViewById( R.id.place_picker);
+        mPlacePicker = (ImageView) findViewById( R.id.ic_place_picker);
         mMainMenu = (ImageView) findViewById( R.id.main_menu);
+        mResync = (ImageView) findViewById( R.id.ic_action_resync);
+        mFireDep = (ImageView) findViewById(R.id.ic_action_firedep_icon) ;
+        mPolice = (ImageView) findViewById(R.id.ic_action_police_icon);
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         mbottomSheetLayout = (BottomSheetLayout) findViewById(R.id.transportation_coreport_bottomsheet);
         getLocationPermission();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        FireDep_Result = json_parsing_fireDep.extractJsonfrom(context);
+        Police_Result = json_parsing_police.extractJsonfrom(context);
+
+
+//        Log.d(TAG, "\nFireDepAsyncTask: Started.\n");
+//        Log.d(TAG, "\nFireDepAsyncTask: URL: " + USGS_REQUEST_URL_FIREDEP_POLICE + '\n');
+//        FireDepAsyncTask task01 = new FireDepAsyncTask();
+//        task01.execute(USGS_REQUEST_URL_FIREDEP_POLICE);
+
+//        Log.d(TAG, "\nFireDepAsyncTask: URL: " + USGS_REQUEST_URL_FIREDEP_POLICE + '\n');
+//        PoliceDepAsyncTask task02 = new PoliceDepAsyncTask();
+//        task02.execute(USGS_REQUEST_URL_FIREDEP_POLICE);
+
     }
 
     /**
@@ -197,6 +294,10 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
         return true;
     }
 
+
+    /**
+     * -------------------------  member function define ------------------------------------
+     */
     private void init(){
         Log.d(TAG, "init: initializing");
 
@@ -280,6 +381,94 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
             }
         });
 
+        mResync.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UpdateAsyncTask task01 = new UpdateAsyncTask();
+                task01.execute(USGS_REQUEST_URL_REPORT_ACCIDENT);
+                // here to reset data on the map !! need to reset all the data to the origin
+                mReportState = Report_accident_code.NULL;
+                //map  redraw
+                // curser to the origin point
+                // clear the node!!!
+            }
+        });
+
+        mFireDep.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+//                MarkerOptions markerOptions1 = new MarkerOptions();
+//                markerOptions1.position( new LatLng(25.009501, 121.424763));
+//                mMap.addMarker( markerOptions1);
+
+                Log.d("Howard ~~~~~" , String.valueOf(FireDep_Result.size() ));
+
+                if( FireDep_Buttom_is_clicked == true ){
+                    FireDep_Buttom_is_clicked = false;
+                    Toast.makeText( Transportation_Coreport_Map.this, "關起消防局圖例", Toast.LENGTH_SHORT).show();
+                }
+                else if ( FireDep_Buttom_is_clicked == false ){
+                    FireDep_Buttom_is_clicked = true;
+                    Toast.makeText( Transportation_Coreport_Map.this, "打開消防局圖例", Toast.LENGTH_SHORT).show();
+                }
+                try {
+                    if ( FireDep_Buttom_is_clicked ){
+                        for ( int i = 0; i < FireDep_Result.size(); i++ ){
+                            Log.d(TAG, '\n' + FireDep_Result.get(i).getmFireDep_lat() + '\t' +  FireDep_Result.get(i).getmFireDep_lng() + '\n' );
+                            LatLng latLng = new LatLng( Double.parseDouble(FireDep_Result.get(i).getmFireDep_lat()), Double.parseDouble(FireDep_Result.get(i).getmFireDep_lng()));
+                            MarkerOptions markerOptions = new MarkerOptions();
+                            markerOptions.position(latLng);
+                            markers_fireDep.add(mMap.addMarker(markerOptions));
+                        }
+                    }
+                    else{
+                        for ( int i = 0; i < markers_fireDep.size(); i++ ){
+                            markers_fireDep.get(i).remove();
+                        }
+                    }
+                }
+                catch ( NullPointerException e){
+                }
+            }
+        });
+
+        mPolice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if( Police_Buttom_is_clicked == true ){
+                    Police_Buttom_is_clicked = false;
+                    Toast.makeText( Transportation_Coreport_Map.this, "關起警察局圖例", Toast.LENGTH_SHORT).show();
+                }
+                else if ( Police_Buttom_is_clicked == false ){
+                    Police_Buttom_is_clicked = true;
+                    Toast.makeText( Transportation_Coreport_Map.this, "打開警察局圖例", Toast.LENGTH_SHORT).show();
+                }
+                try {
+                    if ( Police_Buttom_is_clicked ){
+
+//                        Log.d("Howard ~~~~~" , String.valueOf(Police_Result.size()));
+                        for ( int i = 0; i < Police_Result.size(); i++ ){
+                            LatLng latLng = new LatLng( Double.parseDouble( Police_Result.get(i).getmPolice_lat()), Double.parseDouble( Police_Result.get(i).getmPolice_lng()));
+                            MarkerOptions markerOptions = new MarkerOptions();
+                            markerOptions.position(latLng)
+                                    .title(Police_Result.get(i).getmPolice_name())
+                                    .snippet( "地址：" + Police_Result.get(i).getmPolice_address() + "\n電話：" + Police_Result.get(i).getmPolice_phone() + "\n郵遞區號：" + Police_Result.get(i).getmPolice_zipCode());
+                            markers_police.add(mMap.addMarker(markerOptions));
+                        }
+                    }
+                    else{
+                        for ( int i = 0; i < markers_police.size(); i++ ){
+                            markers_police.get(i).remove();
+                        }
+                    }
+                }
+                catch ( NullPointerException e){
+
+                }
+            }
+        });
+
         hideSoftKeyboard();
     }
 
@@ -351,31 +540,31 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
 
                                 switch (item.getTitle().toString()){
                                     case "違規停車":
-                                        id_to_send = "ic_action_car_accident";
+                                        mReportState = Report_accident_code.CAR_PULL_RANDOMLY;
                                         break;
                                     case "車禍":
-                                        id_to_send = "ic_action_caraccident";
+                                        mReportState = Report_accident_code.CAR_ACCIDENT;
                                         break;
                                     case"塞車":
-                                        id_to_send = "ic_action_traffic_jam";
+                                        mReportState = Report_accident_code.TRAFFIC_JAM;
                                         break;
                                     case "道路封閉":
-                                        id_to_send = "ic_action_car_road_block";
+                                        mReportState = Report_accident_code.ROAD_BLOCK;
                                         break;
                                     case "大型障礙物":
-                                        id_to_send = "ic_action_road_big_block";
+                                        mReportState = Report_accident_code.BIG_ROAD_OBSTRUCTION;
                                         break;
                                     case "交通號誌故障":
-                                        id_to_send = "ic_action_traffic_light_broken";
+                                        mReportState = Report_accident_code.TRAFFIC_LIGHT_BROKEN;
                                         break;
                                     case "異常臭味":
-                                        id_to_send = "ic_action_smelly";
+                                        mReportState = Report_accident_code.WIERD_SMELL;
                                         break;
                                     case "火災":
-                                        id_to_send = "ic_action_fire";
+                                        mReportState = Report_accident_code.FIRE;
                                         break;
                                     case "其他":
-                                        id_to_send = "ic_action_others";
+                                        mReportState = Report_accident_code.OTHERS;;
                                         break;
                                     default:
                                         break;
@@ -385,13 +574,24 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
                                 if (mbottomSheetLayout.isSheetShowing()) {
                                     mbottomSheetLayout.dismissSheet();
                                 }
-                                // pop up the dialog window!!
+
+                                // the data that is going to transmit!
                                 LatLng latLng_dialog = mPlace.getLatlng();
                                 String latitude_dialog = String.valueOf(latLng_dialog.latitude);
                                 String longitude_dialog = String.valueOf(latLng_dialog.longitude);
                                 String toPass = "( "+ latitude_dialog + ", " + longitude_dialog + " )";
-                                Fragment_Dialog_Confirm_Report_Information fragment_dialog_confirm_report_information = new Fragment_Dialog_Confirm_Report_Information().newInstance( latitude_dialog,longitude_dialog, item.getTitle().toString(),id_to_send);
-                                fragment_dialog_confirm_report_information.show(getFragmentManager(), "Transportation_coreport_map_popup_dialog_accident_report");
+
+                                if ( mReportState == Report_accident_code.OTHERS ){
+                                    Fragment_Dialog_Confirm_Report_Others fragment_dialog_confirm_report_others = new Fragment_Dialog_Confirm_Report_Others().newInstance( latitude_dialog,longitude_dialog, item.getTitle().toString(), mReportState.getValue());
+                                    fragment_dialog_confirm_report_others.show( getFragmentManager(), "Transportation_coreport_map_popup_dialog_accident_report_other");
+                                }
+
+                                else{
+                                    // pop up the dialog window!!
+
+                                    Fragment_Dialog_Confirm_Report_Information fragment_dialog_confirm_report_information = new Fragment_Dialog_Confirm_Report_Information().newInstance( latitude_dialog,longitude_dialog, item.getTitle().toString(), mReportState.getValue());
+                                    fragment_dialog_confirm_report_information.show(getFragmentManager(), "Transportation_coreport_map_popup_dialog_accident_report");
+                                }
 
                                 return true;
                             }
@@ -449,11 +649,11 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
                         if(task.isSuccessful()){
                             Log.d(TAG, "onComplete: found location!");
                             Location currentLocation = (Location) task.getResult();
+                            mLastKnownLocation = mCurrentLocation = currentLocation;
 
                             moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
                                     DEFAULT_ZOOM,
                                     "My Location");
-
                         }else{
                             Log.d(TAG, "onComplete: current location is null");
                             Toast.makeText(Transportation_Coreport_Map.this, "unable to get current location", Toast.LENGTH_SHORT).show();
@@ -504,7 +704,6 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
         hideSoftKeyboard();
     }
 
-
     /**
      * to set the center of the map on the phone~
      * This one is to send the title String to call the function
@@ -526,70 +725,13 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
         hideSoftKeyboard();
     }
 
-    /**
-     * to bind the map to the fragment!!
-     */
-    private void initMap(){
-        Log.d(TAG, "initMap: initializing map");
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.transportation_coreport_map);
-
-        mapFragment.getMapAsync(Transportation_Coreport_Map.this);
-    }
-
-    private void getLocationPermission(){
-        Log.d(TAG, "getLocationPermission: getting location permissions");
-        String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION};
-
-        if(ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-            if(ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                    COURSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-                mLocationPermissionsGranted = true;
-                initMap();
-            }else{
-                ActivityCompat.requestPermissions(this,
-                        permissions,
-                        LOCATION_PERMISSION_REQUEST_CODE);
-            }
-        }else{
-            ActivityCompat.requestPermissions(this,
-                    permissions,
-                    LOCATION_PERMISSION_REQUEST_CODE);
-        }
-    }
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        Log.d(TAG, "onRequestPermissionsResult: called.");
-        mLocationPermissionsGranted = false;
-
-        switch(requestCode){
-            case LOCATION_PERMISSION_REQUEST_CODE:{
-                if(grantResults.length > 0){
-                    for(int i = 0; i < grantResults.length; i++){
-                        if(grantResults[i] != PackageManager.PERMISSION_GRANTED){
-                            mLocationPermissionsGranted = false;
-                            Log.d(TAG, "onRequestPermissionsResult: permission failed");
-                            return;
-                        }
-                    }
-                    Log.d(TAG, "onRequestPermissionsResult: permission granted");
-                    mLocationPermissionsGranted = true;
-                    //initialize our map
-                    initMap();
-                }
-            }
-        }
-    }
-
     private void hideSoftKeyboard(){
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
-    /*
-        --------------------------- google places API autocomplete suggestions -----------------
+
+    /**
+     ** ------------- google places API autocomplete suggestions && Store value in mPlace -----------------
      */
 
     /**
@@ -658,4 +800,213 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
             places.release();
         }
     };
+
+    /**
+     * ------------------------------ Permission related function ---------------------------------
+     */
+    private void getLocationPermission(){
+        Log.d(TAG, "getLocationPermission: getting location permissions");
+        String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION};
+
+        if(ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+            if(ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                    COURSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+                mLocationPermissionsGranted = true;
+                initMap();
+            }else{
+                ActivityCompat.requestPermissions(this,
+                        permissions,
+                        LOCATION_PERMISSION_REQUEST_CODE);
+            }
+        }else{
+            ActivityCompat.requestPermissions(this,
+                    permissions,
+                    LOCATION_PERMISSION_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        Log.d(TAG, "onRequestPermissionsResult: called.");
+        mLocationPermissionsGranted = false;
+
+        switch(requestCode){
+            case LOCATION_PERMISSION_REQUEST_CODE:{
+                if(grantResults.length > 0){
+                    for(int i = 0; i < grantResults.length; i++){
+                        if(grantResults[i] != PackageManager.PERMISSION_GRANTED){
+                            mLocationPermissionsGranted = false;
+                            Log.d(TAG, "onRequestPermissionsResult: permission failed");
+                            return;
+                        }
+                    }
+                    Log.d(TAG, "onRequestPermissionsResult: permission granted");
+                    mLocationPermissionsGranted = true;
+                    //initialize our map
+                    initMap();
+                }
+            }
+        }
+    }
+
+
+    /**
+     ** ------------------------------ Asynctask to reload map -------------------------------------
+     */
+    private class UpdateAsyncTask extends AsyncTask< String, Void, List<Parameter_Accident_Point_Coreport> > {
+
+        /**
+         * Override this method to perform a computation on a background thread. The
+         * specified parameters are the parameters passed to {@link #execute}
+         * by the caller of this task.
+         * <p>
+         * This method can call {@link #publishProgress} to publish updates
+         * on the UI thread.
+         *
+         * @param urls The parameters of the task.
+         * @return A result, defined by the subclass of this task.
+         * @see #onPreExecute()
+         * @see #onPostExecute
+         * @see #publishProgress
+         */
+        @Override
+        protected List<Parameter_Accident_Point_Coreport> doInBackground(String... urls) {
+
+            if ( urls.length < 1 || urls[0] == null ){
+                return null;
+            }
+
+            Log.d(TAG, "UpdateAsyncTask is activated!!");
+            urls[0] = urls[0] + "String";
+            Log.d(TAG, "urls[0] is "+ urls[0]);
+
+            Accident_Point_Result = QueryUtils_Request_Accident.request_Accident_Point(urls[0]);
+
+            return null;
+        }
+
+        /**
+         * <p>Runs on the UI thread after {@link #doInBackground}. The
+         * specified result is the value returned by {@link #doInBackground}.</p>
+         * <p>
+         * <p>This method won't be invoked if the task was cancelled.</p>
+         *
+         * @param placeInfos The result of the operation computed by {@link #doInBackground}.
+         * @see #onPreExecute
+         * @see #doInBackground
+         * @see #onCancelled(Object)
+         */
+        @Override
+        protected void onPostExecute(List<Parameter_Accident_Point_Coreport> placeInfos) {
+            if (Accident_Point_Result != null && !Accident_Point_Result.isEmpty()){
+                //do nothing~~ don't need to parse the code!!
+            }
+        }
+    }
+
+
+    /**
+     ** ------------------------------ Asynctask to get firedep and police -------------------------------------
+     */
+    private class FireDepAsyncTask extends AsyncTask< String, Void, List<Parameter_FireDep> > {
+
+        /**
+         * Override this method to perform a computation on a background thread. The
+         * specified parameters are the parameters passed to {@link #execute}
+         * by the caller of this task.
+         * <p>
+         * This method can call {@link #publishProgress} to publish updates
+         * on the UI thread.
+         *
+         * @param urls The parameters of the task.
+         * @return A result, defined by the subclass of this task.
+         * @see #onPreExecute()
+         * @see #onPostExecute
+         * @see #publishProgress
+         */
+        @Override
+        protected List<Parameter_FireDep> doInBackground(String... urls) {
+
+            if ( urls.length < 1 || urls[0] == null ){
+                return null;
+            }
+
+            Log.d(TAG, "\nFireDepAsyncTask is activated!!\n");
+            Log.d(TAG, "\nurls[0] is "+ urls[0] + '\n');
+
+            FireDep_Result = QueryUtils_FireDep.request_FireDep_Point(urls[0]);
+
+            return null;
+        }
+
+        /**
+         * <p>Runs on the UI thread after {@link #doInBackground}. The
+         * specified result is the value returned by {@link #doInBackground}.</p>
+         * <p>
+         * <p>This method won't be invoked if the task was cancelled.</p>
+         *
+         * @param data The result of the operation computed by {@link #doInBackground}.
+         * @see #onPreExecute
+         * @see #doInBackground
+         * @see #onCancelled(Object)
+         */
+        @Override
+        protected void onPostExecute(List<Parameter_FireDep> data ) {
+            if (FireDep_Result != null && !FireDep_Result.isEmpty()){
+                //do nothing~~ don't need to parse the code!!
+            }
+        }
+    }
+
+    private class PoliceDepAsyncTask extends AsyncTask< String, Void, List<Parameter_Police> > {
+
+        /**
+         * Override this method to perform a computation on a background thread. The
+         * specified parameters are the parameters passed to {@link #execute}
+         * by the caller of this task.
+         * <p>
+         * This method can call {@link #publishProgress} to publish updates
+         * on the UI thread.
+         *
+         * @param urls The parameters of the task.
+         * @return A result, defined by the subclass of this task.
+         * @see #onPreExecute()
+         * @see #onPostExecute
+         * @see #publishProgress
+         */
+        @Override
+        protected List<Parameter_Police> doInBackground(String... urls) {
+
+            if ( urls.length < 1 || urls[0] == null ){
+                return null;
+            }
+
+            Log.d(TAG, "\nFireDepAsyncTask is activated!!\n");
+            Log.d(TAG, "\nurls[0] is "+ urls[0] + '\n');
+
+            Police_Result = QueryUtils_Police.request_Police_Point(urls[0]);
+
+            return null;
+        }
+
+        /**
+         * <p>Runs on the UI thread after {@link #doInBackground}. The
+         * specified result is the value returned by {@link #doInBackground}.</p>
+         * <p>
+         * <p>This method won't be invoked if the task was cancelled.</p>
+         *
+         * @param data The result of the operation computed by {@link #doInBackground}.
+         * @see #onPreExecute
+         * @see #doInBackground
+         * @see #onCancelled(Object)
+         */
+        @Override
+        protected void onPostExecute(List<Parameter_Police> data ) {
+            if (Police_Result != null && !Police_Result.isEmpty()){
+                //do nothing~~ don't need to parse the code!!
+            }
+        }
+    }
 }

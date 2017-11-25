@@ -3,11 +3,7 @@ package com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transpor
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.models.PlaceInfo;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.Parameter.Parameter_Accident_Point_Coreport;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,7 +13,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,12 +20,12 @@ import java.util.List;
  */
 
 //the helper function relating to requesting nad receiving the data from Azure
-public final class QueryUtils_Report_Accident {
-    private static final String LOG_TAG = QueryUtils_Report_Accident.class.getSimpleName();
-    private QueryUtils_Report_Accident(){
+public final class QueryUtils_Request_Accident {
+    private static final String LOG_TAG = QueryUtils_Request_Accident.class.getSimpleName();
+    private QueryUtils_Request_Accident(){
     }
 
-    public static List<PlaceInfo> report_Accident_Point(String requestUrl){
+    public static List<Parameter_Accident_Point_Coreport> request_Accident_Point(String requestUrl){
         URL url = createUrl(requestUrl);
         String jsonResponse = null;
         try{
@@ -39,8 +34,8 @@ public final class QueryUtils_Report_Accident {
         catch (IOException e){
             Log.e(LOG_TAG, "Problem making the HTTP request.", e);
         }
-//        List<PlaceInfo> PlaceInfo = extractFeatureFormJson(jsonResponse);
-        return  null;
+        List<Parameter_Accident_Point_Coreport> parameter_accident_point_coreports = extractFeatureFormJson(jsonResponse);
+        return  parameter_accident_point_coreports;
     }
 
     private  static  URL createUrl (String stringUrl){
@@ -88,7 +83,7 @@ public final class QueryUtils_Report_Accident {
         return jsonResponse;
     }
 
-    private static List<PlaceInfo> extractFeatureFormJson (String jsonResponse){
+    private static List<Parameter_Accident_Point_Coreport> extractFeatureFormJson (String jsonResponse){
         if (TextUtils.isEmpty(jsonResponse)){
             return null;
         }

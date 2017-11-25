@@ -31,7 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Daily_Reminder.Activity_Daily_Reminder_Intro;
-import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.Place_AutoComplete_Adapter;
+import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.models.Place_AutoComplete_Adapter;
 import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.Transportation_Coreport_Map;
 import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.models.Adapter_PlaceInfo;
 import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.models.PlaceInfo;

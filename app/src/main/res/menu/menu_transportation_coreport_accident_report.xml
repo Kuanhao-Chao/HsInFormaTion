@@ -3,19 +3,19 @@
     <item
         android:id="@+id/car_pull_randomly"
         android:title="違規停車"
-        android:icon="@drawable/ic_action_car_accident"/>
+        android:icon="@drawable/icon_car_pull_randomly"/>
     <item
         android:id="@+id/car_accident"
         android:title="車禍"
-        android:icon="@drawable/ic_action_caraccident"/>
+        android:icon="@drawable/ic_action_car_accident"/>
     <item
         android:id="@+id/traffic_jam"
         android:title="塞車"
-        android:icon="@drawable/ic_action_traffic_jam"/>
+        android:icon="@drawable/icon_traffic_jam"/>
     <item
         android:id="@+id/road_block"
         android:title="道路封閉"
-        android:icon="@drawable/ic_action_car_road_block"/>
+        android:icon="@drawable/icon_road_block"/>
     <item
         android:id="@+id/big_road_obstruction"
         android:title="大型障礙物"
@@ -23,16 +23,16 @@
     <item
         android:id="@+id/traffic_light_broken"
         android:title="交通號誌故障"
-        android:icon="@drawable/ic_action_traffic_light_broken"/>
+        android:icon="@drawable/icon_traffic_light"/>
 
     <item
         android:id="@+id/wierd_smell"
         android:title="異常臭味"
-        android:icon="@drawable/ic_action_smelly"/>
+        android:icon="@drawable/icon_smelly"/>
     <item
         android:id="@+id/fire"
         android:title="火災"
-        android:icon="@drawable/ic_action_fire"/>
+        android:icon="@drawable/icon_fire"/>
     <item
         android:id="@+id/others"
         android:title="其他"
