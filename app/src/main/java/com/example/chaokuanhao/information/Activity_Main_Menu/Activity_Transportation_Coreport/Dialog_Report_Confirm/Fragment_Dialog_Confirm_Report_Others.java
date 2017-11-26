@@ -95,7 +95,7 @@ public class Fragment_Dialog_Confirm_Report_Others extends DialogFragment  {
 
                         // call another diolog
                         Fragment_Dialog_Confirm_Report_Information fragment_dialog_confirm_report_information = new Fragment_Dialog_Confirm_Report_Information()
-                                .newInstance(getArguments().getString("msg1"),getArguments().getString("msg2"), other_accident_name, getArguments().getInt("msg3"));
+                                .newInstance(getArguments().getString("msg1"),getArguments().getString("msg2"), other_accident_name, getArguments().getInt("msg4"));
                         fragment_dialog_confirm_report_information.show(getFragmentManager(), "Transportation_coreport_map_popup_dialog_accident_report_other_second_level");
                     }
                 })

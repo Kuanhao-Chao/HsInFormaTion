@@ -3,19 +3,39 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <android.support.v4.widget.NestedScrollView
-        android:id="@+id/nestedScrollView"
+
+    <LinearLayout
+        android:background="@color/grey"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="10">
-        <TextView
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/ic_action_go_inside"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Journal Calender"
+            android:src="@drawable/ic_action_go_inside"/>
+        <TextView
+            android:layout_gravity="center"
+            android:id="@+id/ToolText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="50dp"
-            android:textSize="20sp"/>
-    </android.support.v4.widget.NestedScrollView>
+            android:layout_marginTop="0dp"
+            android:layout_weight="8"
+            android:text="Journal Calender"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/ToolRecycleView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="10" />
 
 
     <!--<android.support.design.widget.BottomNavigationView-->

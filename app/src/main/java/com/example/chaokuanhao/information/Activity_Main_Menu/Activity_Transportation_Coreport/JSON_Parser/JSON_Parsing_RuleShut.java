@@ -1,11 +1,11 @@
-package com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport;
+package com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.JSON_Parser;
 
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.util.Log;
 
-import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.Parameter.Parameter_FireDep;
 import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.Parameter.Parameter_Police;
+import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.Parameter.Parameter_Ruleshut;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,15 +20,15 @@ import java.util.ArrayList;
  * Created by Howard on 2017/7/18.
  */
 
-public class JSON_Parsing_Police {
+public class JSON_Parsing_RuleShut {
 
-    public JSON_Parsing_Police(){
+    public JSON_Parsing_RuleShut(){
     }
-    public static ArrayList<Parameter_Police> extractJsonfrom(Context context){
+    public static ArrayList<Parameter_Ruleshut> extractJsonfrom(Context context){
         String json = "";
         try{
             AssetManager assetManager = context.getAssets();
-            InputStream inputStream = assetManager.open("police_point.json");
+            InputStream inputStream = assetManager.open("rulshot.json");
             int size = inputStream.available();
             byte[] buffer = new byte[size];
             inputStream.read(buffer);
@@ -40,11 +40,11 @@ public class JSON_Parsing_Police {
             return null;
         }
 //        Log.d("Howard~~~", byteArrayOutputStream.toString());
-        ArrayList<Parameter_Police> Police_List = new ArrayList<Parameter_Police>();
+        ArrayList<Parameter_Ruleshut> RuleShut_List = new ArrayList<Parameter_Ruleshut>();
         try{
 //            json = byteArrayOutputStream.toString();
             JSONObject root = new JSONObject(json);
-            JSONArray fireDep = root.getJSONArray("police");
+            JSONArray fireDep = root.getJSONArray("ruleshot");
             for (int i=0; i < fireDep.length(); i++){
                 try {
                     JSONObject elementsInWrapper = fireDep.getJSONObject(i);
@@ -53,15 +53,13 @@ public class JSON_Parsing_Police {
 //                    Log.d("Howard~~", lat_fireDep);
                     String lng_police = elementsInWrapper.getString("lng");
 //                    Log.d("Howard~~", lng_fireDep);
-                    String system_police = elementsInWrapper.getString("\u55ae\u4f4d");
+                    String a = elementsInWrapper.getString("\u651d\u5f71\u6a5f\u5730\u9ede ");
 //                    Log.d("Howard~~", name_fireDep);
-                    String address_police = elementsInWrapper.getString("\u5730\u5740");
+                    String b = elementsInWrapper.getString("\u7de8\u865f");
 
-                    String zip_police = elementsInWrapper.getString("\u90f5\u905e\u5340\u865f");
-                    String phone_police = elementsInWrapper.getString("\u96fb\u8a71");
 
-                    Parameter_Police Police = new Parameter_Police( lat_police, lng_police, system_police, address_police, zip_police, phone_police);
-                    Police_List.add(Police);
+                    Parameter_Ruleshut RuleShut = new Parameter_Ruleshut( lat_police, lng_police, a, b);
+                    RuleShut_List.add(RuleShut);
                 }catch (JSONException e){
                     Log.e("", "", e);
                 }
@@ -70,6 +68,6 @@ public class JSON_Parsing_Police {
         catch (JSONException e){
             Log.e("SetJSONToArrayList", "Problem parsing the earthquake JSON results", e);
         }
-        return Police_List;
+        return RuleShut_List;
     }
 }

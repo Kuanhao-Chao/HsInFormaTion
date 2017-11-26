@@ -2,6 +2,7 @@ package com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Informat
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,7 +23,6 @@ import android.view.MenuItem;
 import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Daily_Reminder.Activity_Daily_Reminder_Intro;
 import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Information.Fragment_Information.Information_AED_Fragment;
 import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Information.Fragment_Information.Information_Hydrant_Fragment;
-import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Information.Fragment_Information.Information_Police_Station_Fragment;
 import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.Transportation_Coreport_Map;
 import com.example.chaokuanhao.information.R;
 import com.example.chaokuanhao.information.Utils.BottomNavigationViewHelper;
@@ -93,6 +93,10 @@ public class Information_List_Activity extends AppCompatActivity implements Navi
         // this one is find the main menu
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        //httprequest
+        QueryUtils q = new QueryUtils();
+        q.run();
     }
 
     /**
@@ -167,6 +171,7 @@ public class Information_List_Activity extends AppCompatActivity implements Navi
 //        });
         CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsingToolbarLayout_list);
         collapsingToolbarLayout.setTitle("新竹市資料");
+        collapsingToolbarLayout.setContentScrimColor(Color.rgb(130, 130, 130));
     }
 
     /**
@@ -176,7 +181,7 @@ public class Information_List_Activity extends AppCompatActivity implements Navi
         SectionPagerAdapter adapter = new SectionPagerAdapter(getSupportFragmentManager());
         adapter.addFragment( new Information_AED_Fragment());
         adapter.addFragment( new Information_Hydrant_Fragment());
-        adapter.addFragment( new Information_Police_Station_Fragment());
+        //adapter.addFragment( new Information_Police_Station_Fragment());
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager_container);
         viewPager.setAdapter(adapter);
@@ -213,9 +218,9 @@ public class Information_List_Activity extends AppCompatActivity implements Navi
 
             }
         });
-        tabLayout.getTabAt(0).setText("AED");
-        tabLayout.getTabAt(1).setText("消防栓");
-        tabLayout.getTabAt(2).setText("警察局");
+        tabLayout.getTabAt(0).setText("緊急用具");
+        tabLayout.getTabAt(1).setText("緊急地點");
+        //tabLayout.getTabAt(2).setText("警察局");
     }
 
 

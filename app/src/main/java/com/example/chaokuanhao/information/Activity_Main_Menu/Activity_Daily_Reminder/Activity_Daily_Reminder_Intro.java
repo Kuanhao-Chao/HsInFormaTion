@@ -3,39 +3,28 @@ package com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Daily_Re
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Daily_Reminder.Fragment_Daily_Reminder.Daily_Reminder_Burglar;
 import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Daily_Reminder.Fragment_Daily_Reminder.Daily_Reminder_Fire;
-import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Daily_Reminder.Fragment_Daily_Reminder.Daily_Reminder_News;
 import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Daily_Reminder.Fragment_Daily_Reminder.Daily_Reminder_Transportation;
 import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Daily_Reminder.Fragment_Daily_Reminder.Daily_Reminder_Weather;
 import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Information.Information_List_Activity;
-import com.example.chaokuanhao.information.R;
 import com.github.paolorotolo.appintro.AppIntro;
-import com.github.paolorotolo.appintro.AppIntro2;
-import com.github.paolorotolo.appintro.AppIntro2Fragment;
-import com.github.paolorotolo.appintro.AppIntroFragment;
-import com.github.paolorotolo.appintro.ISlideBackgroundColorHolder;
 
 /**
  * Created by chaokuanhao on 22/11/2017.
  */
 
 public class Activity_Daily_Reminder_Intro extends AppIntro {
-
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // no set content view here
 
         // do design your own background
-//        addSlide(AppIntro2Fragment.newInstance("hi", "hi~~", R.drawable.ic_action_car_accident, 000000));
-//        addSlide(AppIntro2Fragment.newInstance("hi", "hi~~", R.drawable.ic_action_car_accident, 443456));
-        addSlide( new Daily_Reminder_News() );
+//        addSlide( new Daily_Reminder_News() );
         addSlide( new Daily_Reminder_Weather());
         addSlide( new Daily_Reminder_Transportation());
         addSlide( new Daily_Reminder_Fire() );
@@ -46,12 +35,18 @@ public class Activity_Daily_Reminder_Intro extends AppIntro {
         // OPTIONAL METHODS
         // Override bar/separator color.
 //        setBarColor(Color.parseColor("#3F51B5"));
+        setColorTransitionsEnabled(true);
 //        setSeparatorColor(Color.parseColor("#2196F3"));
 
         // Turn vibration on and set intensity.
         // NOTE: you will probably need to ask VIBRATE permission in Manifest.
         setVibrate(true);
         setVibrateIntensity(30);
+        //setFadeAnimation();
+        //setZoomAnimation();
+        //setFlowAnimation();
+        //setSlideOverAnimation();
+        //setDepthAnimation();
     }
 
     // to some animation between switching~~~~~

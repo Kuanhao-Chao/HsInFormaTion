@@ -34,11 +34,12 @@ import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Daily_Rem
 import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Information.Information_List_Activity;
 import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.Dialog_Report_Confirm.Fragment_Dialog_Confirm_Report_Information;
 import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.Dialog_Report_Confirm.Fragment_Dialog_Confirm_Report_Others;
+import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.JSON_Parser.JSON_Parsing_FireDep;
+import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.JSON_Parser.JSON_Parsing_Police;
 import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.Parameter.Parameter_FireDep;
 import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.Parameter.Parameter_Police;
 import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.models.Adapter_PlaceInfo;
 import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.Parameter.Parameter_Accident_Point_Coreport;
-import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.Parameter.Parameter_FireDep_Police;
 import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.models.PlaceInfo;
 import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.models.Place_AutoComplete_Adapter;
 import com.example.chaokuanhao.information.R;
@@ -62,6 +63,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -159,11 +161,13 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
     private static final String TAG = Transportation_Coreport_Map.class.getCanonicalName();
 
     // For Asynctask
-    private static final String USGS_REQUEST_URL_REPORT_ACCIDENT = "http://192.168.0.110:5000/bell/";
+    private static final String USGS_REQUEST_URL_REPORT_ACCIDENT = "http://114.34.123.174:8080/get_report";
     private static final String USGS_REQUEST_URL_FIREDEP_POLICE = "http://114.34.123.174:8080/emerg";
     private List<Parameter_Accident_Point_Coreport> Accident_Point_Result = new ArrayList<Parameter_Accident_Point_Coreport>();
+
     private List<Parameter_FireDep> FireDep_Result = new ArrayList<Parameter_FireDep>();
     private List<Parameter_Police> Police_Result = new ArrayList<Parameter_Police>();
+
     private JSON_Parsing_FireDep json_parsing_fireDep = new JSON_Parsing_FireDep();
     private JSON_Parsing_Police json_parsing_police = new JSON_Parsing_Police();
 
@@ -206,7 +210,7 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
 
     //widgets
     private AutoCompleteTextView mSearchText;
-    private ImageView mGps, mInfo, mPlacePicker, mMainMenu, mResync, mFireDep, mPolice;
+    private ImageView mGps, mInfo, mPlacePicker, mMainMenu, mResync, mFireDep, mPolice, mAccident_point;
     private DrawerLayout mDrawer;
     private BottomSheetLayout mbottomSheetLayout;
 
@@ -222,8 +226,10 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
     private boolean self_scroll_down = true;
     private static boolean FireDep_Buttom_is_clicked = false;
     private static boolean Police_Buttom_is_clicked = false;
+    private static boolean Accident_Buttom_is_clicked = false;
     private List<Marker> markers_fireDep = new ArrayList<Marker>();
     private List<Marker> markers_police = new ArrayList<Marker>();
+    private List<Marker> markers_accident_point = new ArrayList<Marker>();
 
     /**
      *------------------------- essential function override ---------------------------------
@@ -245,6 +251,7 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
         mResync = (ImageView) findViewById( R.id.ic_action_resync);
         mFireDep = (ImageView) findViewById(R.id.ic_action_firedep_icon) ;
         mPolice = (ImageView) findViewById(R.id.ic_action_police_icon);
+        mAccident_point = (ImageView) findViewById(R.id.ic_action_accident_point);
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         mbottomSheetLayout = (BottomSheetLayout) findViewById(R.id.transportation_coreport_bottomsheet);
         getLocationPermission();
@@ -384,6 +391,8 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
         mResync.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                //to reget the data and store in Accident_Point_Result!!
                 UpdateAsyncTask task01 = new UpdateAsyncTask();
                 task01.execute(USGS_REQUEST_URL_REPORT_ACCIDENT);
                 // here to reset data on the map !! need to reset all the data to the origin
@@ -402,14 +411,19 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
 //                markerOptions1.position( new LatLng(25.009501, 121.424763));
 //                mMap.addMarker( markerOptions1);
 
+                mMap.setInfoWindowAdapter(new Adapter_PlaceInfo(Transportation_Coreport_Map.this));
                 Log.d("Howard ~~~~~" , String.valueOf(FireDep_Result.size() ));
 
                 if( FireDep_Buttom_is_clicked == true ){
                     FireDep_Buttom_is_clicked = false;
+                    TextView textView = (TextView) findViewById(R.id.textView_fireDep_need_change);
+                    textView.setText("消防局");
                     Toast.makeText( Transportation_Coreport_Map.this, "關起消防局圖例", Toast.LENGTH_SHORT).show();
                 }
                 else if ( FireDep_Buttom_is_clicked == false ){
                     FireDep_Buttom_is_clicked = true;
+                    TextView textView = (TextView) findViewById(R.id.textView_fireDep_need_change);
+                    textView.setText("關閉圖例");
                     Toast.makeText( Transportation_Coreport_Map.this, "打開消防局圖例", Toast.LENGTH_SHORT).show();
                 }
                 try {
@@ -418,7 +432,9 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
                             Log.d(TAG, '\n' + FireDep_Result.get(i).getmFireDep_lat() + '\t' +  FireDep_Result.get(i).getmFireDep_lng() + '\n' );
                             LatLng latLng = new LatLng( Double.parseDouble(FireDep_Result.get(i).getmFireDep_lat()), Double.parseDouble(FireDep_Result.get(i).getmFireDep_lng()));
                             MarkerOptions markerOptions = new MarkerOptions();
-                            markerOptions.position(latLng);
+                            markerOptions.position(latLng)
+                                    .title(FireDep_Result.get(i).getmFireDep_name())
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_onmap_firedep));
                             markers_fireDep.add(mMap.addMarker(markerOptions));
                         }
                     }
@@ -436,12 +452,18 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
         mPolice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mMap.setInfoWindowAdapter(new Adapter_PlaceInfo(Transportation_Coreport_Map.this));
+
                 if( Police_Buttom_is_clicked == true ){
                     Police_Buttom_is_clicked = false;
+                    TextView textView = (TextView) findViewById( R.id.textView_police_need_change);
+                    textView.setText("警察局");
                     Toast.makeText( Transportation_Coreport_Map.this, "關起警察局圖例", Toast.LENGTH_SHORT).show();
                 }
                 else if ( Police_Buttom_is_clicked == false ){
                     Police_Buttom_is_clicked = true;
+                    TextView textView = (TextView) findViewById( R.id.textView_police_need_change);
+                    textView.setText("關閉圖例");
                     Toast.makeText( Transportation_Coreport_Map.this, "打開警察局圖例", Toast.LENGTH_SHORT).show();
                 }
                 try {
@@ -453,13 +475,89 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
                             MarkerOptions markerOptions = new MarkerOptions();
                             markerOptions.position(latLng)
                                     .title(Police_Result.get(i).getmPolice_name())
-                                    .snippet( "地址：" + Police_Result.get(i).getmPolice_address() + "\n電話：" + Police_Result.get(i).getmPolice_phone() + "\n郵遞區號：" + Police_Result.get(i).getmPolice_zipCode());
+                                    .snippet( "地址：" + Police_Result.get(i).getmPolice_address() + "\n電話：" + Police_Result.get(i).getmPolice_phone() + "\n郵遞區號：" + Police_Result.get(i).getmPolice_zipCode())
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_onmap_police));
                             markers_police.add(mMap.addMarker(markerOptions));
                         }
                     }
                     else{
                         for ( int i = 0; i < markers_police.size(); i++ ){
                             markers_police.get(i).remove();
+                        }
+                    }
+                }
+                catch ( NullPointerException e){
+
+                }
+            }
+        });
+
+        mAccident_point.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMap.setInfoWindowAdapter(new Adapter_PlaceInfo(Transportation_Coreport_Map.this));
+
+                if( Accident_Buttom_is_clicked == true ){
+                    Accident_Buttom_is_clicked = false;
+                    TextView textView = (TextView) findViewById( R.id.textView_accident_point);
+                    textView.setText("事故顯示");
+                    Toast.makeText( Transportation_Coreport_Map.this, "關啟事故圖例", Toast.LENGTH_SHORT).show();
+                }
+                else if ( Accident_Buttom_is_clicked == false ){
+                    Accident_Buttom_is_clicked = true;
+                    TextView textView = (TextView) findViewById( R.id.textView_accident_point);
+                    textView.setText("關閉圖例");
+                    Toast.makeText( Transportation_Coreport_Map.this, "打開事故圖例", Toast.LENGTH_SHORT).show();
+                }
+                try {
+                    if ( Accident_Buttom_is_clicked ){
+
+//                        Log.d("Howard ~~~~~" , String.valueOf(Police_Result.size()));
+                        for ( int i = 0; i < Accident_Point_Result.size(); i++ ){
+
+                            int icon_drawable_number = 0;
+                            switch (Accident_Point_Result.get(i).getmAccidentType()){
+                                case "違規停車" :
+                                    icon_drawable_number = R.drawable.icon_car_pull_randomly;
+                                    break;
+                                case "車禍" :
+                                    icon_drawable_number = R.drawable.ic_action_car_accident;
+                                    break;
+                                case "塞車" :
+                                    icon_drawable_number = R.drawable.icon_traffic_jam;
+                                    break;
+                                case "道路封閉" :
+                                    icon_drawable_number = R.drawable.icon_road_block;
+                                    break;
+                                case "大型障礙物" :
+                                    icon_drawable_number = R.drawable.ic_action_road_big_block;
+                                    break;
+                                case "交通號誌故障" :
+                                    icon_drawable_number = R.drawable.icon_traffic_light;
+                                    break;
+                                case "異常臭味":
+                                    icon_drawable_number = R.drawable.icon_smelly;
+                                    break;
+                                case "火災" :
+                                    icon_drawable_number = R.drawable.icon_fire;
+                                    break;
+                                default:
+                                    icon_drawable_number = R.drawable.ic_action_report;
+                                    break;
+                            }
+
+                            Log.d(TAG, "\nHoward" + Accident_Point_Result.get(i).getmAccidentType() + '\n');
+                            LatLng latLng = new LatLng(  Double.parseDouble(Accident_Point_Result.get(i).getmLatitude()), Double.parseDouble( Accident_Point_Result.get(i).getmLogitude()));
+                            MarkerOptions markerOptions = new MarkerOptions();
+                            markerOptions.position(latLng)
+                                    .title(Accident_Point_Result.get(i).getmAccidentType())
+                                    .icon(BitmapDescriptorFactory.fromResource(icon_drawable_number));
+                            markers_accident_point.add(mMap.addMarker(markerOptions));
+                        }
+                    }
+                    else{
+                        for ( int i = 0; i < markers_accident_point.size(); i++ ){
+                            markers_accident_point.get(i).remove();
                         }
                     }
                 }
@@ -879,7 +977,7 @@ public class Transportation_Coreport_Map extends AppCompatActivity implements On
             }
 
             Log.d(TAG, "UpdateAsyncTask is activated!!");
-            urls[0] = urls[0] + "String";
+            urls[0] = urls[0];
             Log.d(TAG, "urls[0] is "+ urls[0]);
 
             Accident_Point_Result = QueryUtils_Request_Accident.request_Accident_Point(urls[0]);

@@ -5,25 +5,39 @@ package com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transpor
  */
 
 public class Parameter_Accident_Point_Coreport {
-    private double mLatitude;
-    private double mLogitude;
+    private String mLatitude;
+    private String mLogitude;
     private String mAccidentType;
 
-    public Parameter_Accident_Point_Coreport( double Latitude, double Longitude, String Accident ){
+    public Parameter_Accident_Point_Coreport( String Latitude, String Longitude, String Accident) {
         mLatitude = Latitude;
         mLogitude = Longitude;
         mAccidentType = Accident;
     }
 
-    public double getmLatitude() {
+
+    public String getmLatitude() {
         return mLatitude;
     }
 
-    public double getmLogitude() {
+    public String getmLogitude() {
         return mLogitude;
     }
 
     public String getmAccidentType() {
         return mAccidentType;
+    }
+
+
+    public void setmLatitude(String mLatitude) {
+        this.mLatitude = mLatitude;
+    }
+
+    public void setmLogitude(String mLogitude) {
+        this.mLogitude = mLogitude;
+    }
+
+    public void setmAccidentType(String mAccidentType) {
+        this.mAccidentType = mAccidentType;
     }
 }

@@ -18,6 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
+            android:background="#828282"
             android:theme="@style/AppTheme.AppBarOverlay">
 
             <android.support.design.widget.CollapsingToolbarLayout
@@ -30,6 +31,7 @@
                 app:expandedTitleMarginBottom="20dp"
                 app:expandedTitleMarginEnd="64dp"
                 app:expandedTitleMarginStart="48dp"
+                android:background="@drawable/background_toolbar"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <android.support.v7.widget.Toolbar
@@ -37,7 +39,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:minHeight="?attr/actionBarSize"
-                android:title="新竹市資料"
+                android:title="新竹市"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/AppTheme.PopupOverlay"/>
 
@@ -48,8 +50,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 app:tabMode="fixed"
-                app:tabGravity="fill"
-                />
+                app:tabGravity="fill" />
 
         </android.support.design.widget.AppBarLayout>
 

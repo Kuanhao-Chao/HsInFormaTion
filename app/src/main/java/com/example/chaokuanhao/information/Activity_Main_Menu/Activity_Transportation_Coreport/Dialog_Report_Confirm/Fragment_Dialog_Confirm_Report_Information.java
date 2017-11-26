@@ -6,6 +6,7 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,7 +28,7 @@ public class Fragment_Dialog_Confirm_Report_Information extends DialogFragment {
 
     private static final String TAG = Fragment_Dialog_Confirm_Report_Information.class.getSimpleName();
 
-    private static final String USGS_REQUEST_URL_REPORT_ACCIDENT = "http://192.168.0.110:5000/bell/";
+    private static final String USGS_REQUEST_URL_REPORT_ACCIDENT = "http://114.34.123.174:8080/report/";
     private String lagLng;
     private String typeAccident;
 
@@ -166,7 +167,7 @@ public class Fragment_Dialog_Confirm_Report_Information extends DialogFragment {
             _report_type = getArguments().getString("msg3");
             _report_type_int_value = getArguments().getInt("msg4");
 
-            urls[0] = urls[0] + _latitude + '/' + _longitude + '/' + _report_type_int_value;
+            urls[0] = urls[0]  + Integer.toString( _report_type_int_value ) + '/' + _latitude + '/' + _longitude + '/' + _report_type;
             Log.i(TAG, urls[0]);
             //Log.i(LOG_TAG, urls[1]);
             QueryUtils_Report_Accident.report_Accident_Point(urls[0]);

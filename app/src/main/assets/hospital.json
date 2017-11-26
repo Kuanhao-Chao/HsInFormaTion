@@ -1,0 +1,44 @@
+{
+    "hospital": [
+    {
+      "lat": "24.8152746", 
+      "lng": "120.9800043", 
+      "\u5730\u5740": "\u65b0\u7af9\u5e02\u7d93\u570b\u8def\u4e00\u6bb5442\u5df725\u865f", 
+      "\u9023\u7d50\u7db2\u5740": "https://www.hch.gov.tw/home.asp", 
+      "\u91ab\u7642\u6a5f\u69cb": "\u570b\u7acb\u81fa\u7063\u5927\u5b78\u91ab\u5b78\u9662\u9644\u8a2d\u91ab\u9662\u65b0\u7af9\u5206\u9662", 
+      "\u96fb\u8a71": "5326151"
+    }, 
+    {
+      "lat": "24.8021381", 
+      "lng": "120.969653", 
+      "\u5730\u5740": "\u65b0\u7af9\u5e02\u6797\u68ee\u8def20\u865f", 
+      "\u9023\u7d50\u7db2\u5740": "http://nanmen.com.tw/", 
+      "\u91ab\u7642\u6a5f\u69cb": "\u5357\u9580\u7d9c\u5408\u91ab\u9662", 
+      "\u96fb\u8a71": "5261122"
+    }, 
+    {
+      "lat": "24.8154181", 
+      "lng": "120.9623311", 
+      "\u5730\u5740": "\u65b0\u7af9\u5e02\u6b66\u9675\u8def3\u865f", 
+      "\u9023\u7d50\u7db2\u5740": "http://813.mnd.gov.tw/", 
+      "\u91ab\u7642\u6a5f\u69cb": "\u570b\u8ecd\u65b0\u7af9\u5730\u5340\u91ab\u9662\u9644\u8a2d\u6c11\u773e\u8a3a\u7642\u670d\u52d9\u8655", 
+      "\u96fb\u8a71": "5348181"
+    }, 
+    {
+      "lat": "24.7982349", 
+      "lng": "120.9653132", 
+      "\u5730\u5740": "\u65b0\u7af9\u5e02\u4e2d\u83ef\u8def2\u6bb5678\u865f", 
+      "\u9023\u7d50\u7db2\u5740": "http://hsinchu.cgh.org.tw/tw/index.html", 
+      "\u91ab\u7642\u6a5f\u69cb": "\u570b\u6cf0\u7d9c\u5408\u91ab\u9662\u65b0\u7af9\u5206\u9662", 
+      "\u96fb\u8a71": "5278999"
+    }, 
+    {
+      "lat": "24.800045", 
+      "lng": "120.9906631", 
+      "\u5730\u5740": "\u65b0\u7af9\u5e02\u5149\u5fa9\u8def2\u6bb5690\u865f", 
+      "\u9023\u7d50\u7db2\u5740": "http://www.hc.mmh.org.tw/WebHc/index.aspx", 
+      "\u91ab\u7642\u6a5f\u69cb": "\u99ac\u5055\u7d00\u5ff5\u91ab\u9662\u65b0\u7af9\u5206\u9662", 
+      "\u96fb\u8a71": "6119595"
+    }
+  ]
+}

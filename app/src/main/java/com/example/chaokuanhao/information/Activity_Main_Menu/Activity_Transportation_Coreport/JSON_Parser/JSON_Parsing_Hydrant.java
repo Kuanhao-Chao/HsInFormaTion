@@ -1,23 +1,18 @@
-package com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport;
+package com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.JSON_Parser;
 
 import android.content.Context;
 import android.content.res.AssetManager;
-import android.content.res.Resources;
-import android.support.annotation.RequiresPermission;
 import android.util.Log;
 
-import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.Parameter.Parameter_FireDep;
-import com.example.chaokuanhao.information.R;
+import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.Parameter.Parameter_Hydrant;
+import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.Parameter.Parameter_Police;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 
@@ -25,15 +20,15 @@ import java.util.ArrayList;
  * Created by Howard on 2017/7/18.
  */
 
-public class JSON_Parsing_FireDep {
+public class JSON_Parsing_Hydrant {
 
-    public JSON_Parsing_FireDep(){
+    public JSON_Parsing_Hydrant(){
     }
-    public static ArrayList<Parameter_FireDep> extractJsonfrom(Context context){
+    public static ArrayList<Parameter_Hydrant> extractJsonfrom(Context context){
         String json = "";
         try{
             AssetManager assetManager = context.getAssets();
-            InputStream inputStream = assetManager.open("firedep_point.json");
+            InputStream inputStream = assetManager.open("hydrant.json");
             int size = inputStream.available();
             byte[] buffer = new byte[size];
             inputStream.read(buffer);
@@ -45,23 +40,27 @@ public class JSON_Parsing_FireDep {
             return null;
         }
 //        Log.d("Howard~~~", byteArrayOutputStream.toString());
-        ArrayList<Parameter_FireDep> FireDepList = new ArrayList<Parameter_FireDep>();
+        ArrayList<Parameter_Hydrant> Hydrant_list = new ArrayList<Parameter_Hydrant>();
         try{
 //            json = byteArrayOutputStream.toString();
             JSONObject root = new JSONObject(json);
-            JSONArray fireDep = root.getJSONArray("fireDep");
+            JSONArray fireDep = root.getJSONArray("hydrant");
             for (int i=0; i < fireDep.length(); i++){
                 try {
                     JSONObject elementsInWrapper = fireDep.getJSONObject(i);
 
-                    String lat_fireDep = elementsInWrapper.getString("lat");
+                    String lat_police = elementsInWrapper.getString("lat");
 //                    Log.d("Howard~~", lat_fireDep);
-                    String lng_fireDep = elementsInWrapper.getString("lng");
+                    String lng_police = elementsInWrapper.getString("lng");
 //                    Log.d("Howard~~", lng_fireDep);
-                    String name_fireDep = elementsInWrapper.getString("\u55ae\u4f4d\u540d\u7a31");
+                    String b = elementsInWrapper.getString("\u578b\u5f0f");
 //                    Log.d("Howard~~", name_fireDep);
-                    Parameter_FireDep FireDep = new Parameter_FireDep( lat_fireDep, lng_fireDep, name_fireDep);
-                    FireDepList.add(FireDep);
+                    String c = elementsInWrapper.getString("\u6d88\u9632\u6813\u7de8\u865f");
+
+                    String d = elementsInWrapper.getString("\u8a2d\u7f6e\u5730\u9ede");
+
+                    Parameter_Hydrant Hydrant = new Parameter_Hydrant( lat_police, lng_police, b, c, d);
+                    Hydrant_list.add(Hydrant);
                 }catch (JSONException e){
                     Log.e("", "", e);
                 }
@@ -70,6 +69,6 @@ public class JSON_Parsing_FireDep {
         catch (JSONException e){
             Log.e("SetJSONToArrayList", "Problem parsing the earthquake JSON results", e);
         }
-        return FireDepList;
+        return Hydrant_list;
     }
 }

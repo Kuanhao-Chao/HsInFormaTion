@@ -4,6 +4,11 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.Parameter.Parameter_Accident_Point_Coreport;
+import com.example.chaokuanhao.information.Activity_Main_Menu.Activity_Transportation_Coreport.Parameter.Parameter_Police;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,6 +18,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -87,7 +93,29 @@ public final class QueryUtils_Request_Accident {
         if (TextUtils.isEmpty(jsonResponse)){
             return null;
         }
-        return null;
+        List<Parameter_Accident_Point_Coreport> accident_point_coreports_list = new ArrayList<Parameter_Accident_Point_Coreport>();
+        try {
+            JSONObject root = new JSONObject(jsonResponse);
+            JSONArray accident = root.getJSONArray("accident");
+            for ( int j = 0; j < 9; j++ ){
+                JSONArray accident_inside = accident.getJSONArray(j);
+                for ( int i = 0; i < accident_inside.length(); i++ ){
+                    JSONObject elementsWrapper = accident_inside.getJSONObject(i);
+                    String accident_name = elementsWrapper.getString("name");
+                    JSONArray accident_place = elementsWrapper.getJSONArray("place");
+                    String accident_place_lat = accident_place.getString(0);
+                    String accident_place_lng = accident_place.getString(1);
+                    int accident_type = elementsWrapper.getInt("type");
+
+                    Parameter_Accident_Point_Coreport accident_point_coreports = new Parameter_Accident_Point_Coreport( accident_place_lat, accident_place_lng, accident_name);
+                    accident_point_coreports_list.add(accident_point_coreports);
+                }
+            }
+
+        }catch (JSONException e ){
+            Log.e(LOG_TAG, "Problem parsing the JSON results" + e);
+        }
+        return accident_point_coreports_list;
     }
 
     private static String readFromStream(InputStream inputStream) throws IOException{
